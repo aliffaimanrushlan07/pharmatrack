@@ -1,0 +1,22 @@
+<%--
+    Receipt shown after a completed sale.
+    OWNER: YASIERUL
+    STATUS: STUB - Yasierul to build.
+
+    Print-friendly is a nice touch and costs two lines:
+        <style media="print"> .navbar, .footer, .btn { display: none; } </style>
+    Printing a receipt live in the demo shows the calculation feature working
+    end to end.
+--%>
+<c:set var="pageTitle" value="Receipt"/>
+<c:set var="activeNav" value="sale"/>
+<%@ include file="/includes/header.jspf" %>
+
+<div class="page-header"><div><h1>Receipt</h1></div></div>
+
+<div class="todo-banner">
+    <strong>Assigned to Yasierul &mdash; not built yet</strong>
+    Show ${sale} with its line items, each subtotal, and the grand total.
+</div>
+
+<%@ include file="/includes/footer.jspf" %>

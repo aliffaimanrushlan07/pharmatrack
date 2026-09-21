@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Tomcat context configuration.
+  OWNER: Aliff (Architecture)
+
+  path="/pharmatrack"  ->  the app is served at http://localhost:8080/pharmatrack
+  If you change this, tell the group: every screenshot in the user manual
+  and every URL in the report would have to change with it.
+-->
+<Context path="/pharmatrack" reloadable="true">
+    <!-- Stops Tomcat holding a lock on JAR files on Windows, which otherwise
+         makes "clean and build" fail with a file-in-use error. -->
+    <Resources antiResourceLocking="false" />
+</Context>

@@ -1,0 +1,13 @@
+<%--
+    Shared page footer - closes the container div opened in header.jspf.
+    OWNER: AMIR (Interface Design)
+--%>
+</div><!-- /.container -->
+
+<div class="footer">
+    PharmaTrack &mdash; Pharmacy Inventory and Sales Management System<br>
+    SWC4253 Enterprise Software Development &middot; Universiti Poly-Tech Malaysia
+</div>
+
+</body>
+</html>
