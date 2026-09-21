@@ -1,0 +1,58 @@
+# ============================================================================
+#  CODEOWNERS - PharmaTrack
+#  SWC4253 Enterprise Software Development
+# ============================================================================
+#  GitHub reads this file and automatically requests a review from the owner
+#  whenever a pull request touches their files. It is the machine-readable
+#  version of docs/MODULE-OWNERSHIP.md.
+#
+#  >>> REPLACE THE PLACEHOLDER USERNAMES BELOW WITH REAL GITHUB HANDLES. <<<
+#  Until you do, GitHub silently ignores the lines - the usernames must be
+#  real accounts with access to the repository.
+#
+#  Later rules override earlier ones, so the general rules come first.
+# ============================================================================
+
+# Default - anything not matched below needs a look from the repo owner
+*                                   @aliff-github-username
+
+# --- RAMZI: Database Design & Data Access Layer -----------------------------
+/database/                          @ramzi-github-username
+/src/main/java/my/edu/uptm/pharmatrack/model/       @ramzi-github-username
+/src/main/java/my/edu/uptm/pharmatrack/dao/DBConnection.java  @ramzi-github-username
+/src/main/java/my/edu/uptm/pharmatrack/dao/GenericDAO.java    @ramzi-github-username
+/src/main/java/my/edu/uptm/pharmatrack/dao/MedicineDAO.java   @ramzi-github-username @amir-github-username
+
+# --- AMIR: CRUD & Interface Module ------------------------------------------
+/src/main/java/my/edu/uptm/pharmatrack/dao/SupplierDAO.java        @amir-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/MedicineServlet.java  @amir-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/SupplierServlet.java  @amir-github-username
+/src/main/java/my/edu/uptm/pharmatrack/util/                       @amir-github-username
+/src/main/webapp/medicine/          @amir-github-username
+/src/main/webapp/supplier/          @amir-github-username
+/src/main/webapp/includes/          @amir-github-username
+/src/main/webapp/css/               @amir-github-username
+/src/main/webapp/dashboard.jsp      @amir-github-username
+
+# --- ALIFF: Authentication, Security & Architecture -------------------------
+/src/main/java/my/edu/uptm/pharmatrack/security/    @aliff-github-username
+/src/main/java/my/edu/uptm/pharmatrack/dao/UserDAO.java                 @aliff-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/LoginServlet.java     @aliff-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/LogoutServlet.java    @aliff-github-username
+/src/main/webapp/login.jsp          @aliff-github-username
+/src/main/webapp/index.jsp          @aliff-github-username
+/src/main/webapp/WEB-INF/           @aliff-github-username
+/src/main/webapp/META-INF/          @aliff-github-username
+/pom.xml                            @aliff-github-username
+/.gitignore                         @aliff-github-username
+
+# --- YASIERUL: Search, Business Logic & Documentation -----------------------
+/src/main/java/my/edu/uptm/pharmatrack/dao/SaleDAO.java     @yasierul-github-username
+/src/main/java/my/edu/uptm/pharmatrack/service/             @yasierul-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/SaleServlet.java      @yasierul-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/SearchServlet.java    @yasierul-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/ReportServlet.java    @yasierul-github-username
+/src/main/webapp/sale/              @yasierul-github-username
+/src/main/webapp/report/            @yasierul-github-username
+/src/main/webapp/search.jsp         @yasierul-github-username
+/docs/USER-MANUAL.md                @yasierul-github-username

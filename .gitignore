@@ -1,0 +1,48 @@
+# ============================================================================
+#  PharmaTrack - .gitignore
+#  Keeps build output, IDE settings and local secrets out of the repository.
+#  If git is asking you to commit something in this list, STOP and ask Aliff.
+# ============================================================================
+
+# --- Maven build output -----------------------------------------------------
+target/
+*.war
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+
+# --- NetBeans ---------------------------------------------------------------
+nbproject/private/
+nbproject/build-impl.xml
+nbproject/genfiles.properties
+build/
+dist/
+nbbuild/
+nbdist/
+.nb-gradle/
+catalog.xml
+
+# --- Eclipse / IntelliJ (in case a member uses another IDE) -----------------
+.settings/
+.project
+.classpath
+.idea/
+*.iml
+
+# --- macOS / Windows junk ---------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- Local configuration with real passwords --------------------------------
+# db.properties is committed with placeholder values only.
+# If you need your own local password, copy it to db.local.properties.
+src/main/resources/db.local.properties
+*.local.properties
+
+# --- Logs -------------------------------------------------------------------
+*.log
+logs/
+
+# --- Word temp files (the report lives in a separate folder, but just in case)
+~$*.docx
+~$*.xlsx
