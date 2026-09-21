@@ -6,6 +6,9 @@
     Copy medicine/form.jsp. Same hidden-id trick: supplierId 0 = insert,
     anything else = update.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="${empty supplier ? 'Add supplier' : 'Edit supplier'}"/>
 <c:set var="activeNav" value="supplier"/>
 <%@ include file="/includes/header.jspf" %>

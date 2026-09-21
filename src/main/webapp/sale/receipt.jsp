@@ -8,6 +8,9 @@
     Printing a receipt live in the demo shows the calculation feature working
     end to end.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Receipt"/>
 <c:set var="activeNav" value="sale"/>
 <%@ include file="/includes/header.jspf" %>

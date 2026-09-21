@@ -13,6 +13,9 @@
        only displays it. That is the "separation of presentation and business
        logic" the rubric rewards, and it is why this page is short.
 
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
     2. Every piece of data goes through <c:out>, which HTML-escapes it. A
        medicine saved as <script>alert(1)</script> is DISPLAYED, not executed.
 

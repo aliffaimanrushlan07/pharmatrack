@@ -6,6 +6,9 @@
     Copy medicine/list.jsp and swap the entity. Suppliers have fewer columns
     and no badges, so this is the simpler of the two.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Suppliers"/>
 <c:set var="activeNav" value="supplier"/>
 <%@ include file="/includes/header.jspf" %>

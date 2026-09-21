@@ -7,6 +7,9 @@
 <%@ page import="my.edu.uptm.pharmatrack.dao.MedicineDAO" %>
 <%@ page import="my.edu.uptm.pharmatrack.model.Medicine" %>
 <%@ page import="java.util.List" %>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Dashboard"/>
 <c:set var="activeNav" value="dashboard"/>
 <%@ include file="/includes/header.jspf" %>

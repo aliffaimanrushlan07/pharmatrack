@@ -7,6 +7,9 @@
     method it needs (MedicineDAO.search) is already written and tested.
     Do this one first.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Search"/>
 <c:set var="activeNav" value="search"/>
 <%@ include file="/includes/header.jspf" %>

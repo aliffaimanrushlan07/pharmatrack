@@ -14,6 +14,9 @@
     nobody has to retype a long form because of one bad field. Losing user
     input on a validation error is a usability bug the rubric notices.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="${empty medicine ? 'Add medicine' : 'Edit medicine'}"/>
 <c:set var="activeNav" value="medicine"/>
 <%@ include file="/includes/header.jspf" %>

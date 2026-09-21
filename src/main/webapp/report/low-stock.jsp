@@ -6,6 +6,9 @@
     A second worked example, and evidence of the calculation feature: the
     shortfall column below is computed, not stored.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Low stock report"/>
 <c:set var="activeNav" value="report"/>
 <%@ include file="/includes/header.jspf" %>
