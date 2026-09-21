@@ -13,9 +13,6 @@
        only displays it. That is the "separation of presentation and business
        logic" the rubric rewards, and it is why this page is short.
 
-<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
     2. Every piece of data goes through <c:out>, which HTML-escapes it. A
        medicine saved as <script>alert(1)</script> is DISPLAYED, not executed.
 
@@ -23,6 +20,9 @@
        display format is decided here, in the view, and not baked into the
        model or the database.
 --%>
+<%@ taglib prefix="c"   uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn"  uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="pageTitle" value="Medicines"/>
 <c:set var="activeNav" value="medicine"/>
 <%@ include file="/includes/header.jspf" %>
@@ -117,7 +117,7 @@
                                  action with no confirmation loses marks. --%>
                             <a href="${pageContext.request.contextPath}/medicine?action=delete&id=${m.medicineId}"
                                class="btn btn-sm btn-danger"
-                               onclick="return confirm('Delete &quot;<c:out value="${m.name}"/>&quot;? This cannot be undone.');">
+                               onclick="return confirm('Delete this medicine? This cannot be undone.');">
                                 Delete
                             </a>
                         </td>
