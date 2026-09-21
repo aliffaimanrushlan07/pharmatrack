@@ -118,6 +118,23 @@ You skipped step 3. Run `01_schema.sql`.
 Dependencies did not download. Right-click the project → **Clean and Build**.
 If it still fails you were offline during the first build — connect and rebuild.
 
+### Workbench: "Incompatible/nonstandard server version detected (26.7.0)"
+**Harmless — click "Continue Anyway"** and tick "Don't show this message again".
+
+MySQL moved to calendar versioning in July 2026, so a freshly installed server
+reports a version like `26.7.0`. MySQL Workbench's compatibility check only
+knows about 5.6 / 5.7 / 8.0, so it flags anything newer. The connection works;
+only a few Workbench-specific features (migration wizard, some modelling tools)
+are affected. Nothing this project needs.
+
+The project's JDBC driver is `com.mysql:mysql-connector-j:9.7.0`, which does
+support these servers. If you see an authentication failure from Java rather
+than from Workbench, check you are not on an older driver.
+
+> **Agree one MySQL version across the group.** Four laptops on four different
+> server versions is a needless source of "works on mine". Whatever the first
+> person installs, everyone matches.
+
 ### `java.lang.ClassNotFoundException: javax.servlet.http.HttpServlet`
 You are on **Tomcat 10+**. See the note at the bottom.
 
