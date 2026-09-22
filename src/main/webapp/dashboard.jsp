@@ -79,7 +79,7 @@
         <a href="${pageContext.request.contextPath}/medicine?action=new" class="btn">Add medicine</a>
         <a href="${pageContext.request.contextPath}/sale" class="btn btn-secondary">New sale</a>
         <a href="${pageContext.request.contextPath}/search" class="btn btn-secondary">Search records</a>
-        <a href="${pageContext.request.contextPath}/report" class="btn btn-secondary">Sales report</a>
+        <a href="${pageContext.request.contextPath}/report" class="btn btn-secondary">Reports</a>
     </div>
 </div>
 

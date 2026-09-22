@@ -36,6 +36,7 @@ is pushed.
 |------|--------|
 | `User.java` | ✅ Done |
 | `Medicine.java` | ✅ Done |
+| `StockValuation.java` | ✅ Done — report DTO, holds the valuation total |
 | `Sale.java` | ✅ Done |
 | `SaleItem.java` | ✅ Done |
 
@@ -45,7 +46,7 @@ is pushed.
 |------|-------|--------|
 | `DBConnection.java` | Ramzi | ✅ Done — **nobody else edits this** |
 | `GenericDAO.java` | Ramzi | ✅ Done — the interface |
-| `MedicineDAO.java` | Ramzi + Amir | ✅ Done — **worked example** |
+| `MedicineDAO.java` | Ramzi + Amir | ✅ Done — **worked example** · includes `getStockValuation()` |
 | `UserDAO.java` | Aliff | ✅ Done |
 | `SaleDAO.java` | **Yasierul** | 🔴 Stub — TODO 1–5 |
 
@@ -72,7 +73,7 @@ is pushed.
 | `MedicineServlet.java` | Amir | ✅ Done — **worked example** |
 | `SaleServlet.java` | **Amir** | 🔴 Stub — TODO 1–5 |
 | `SearchServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–4 |
-| `ReportServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–3 |
+| `ReportServlet.java` | **Yasierul** | 🟡 Partial — stock report done, TODO 1–3 |
 
 ### `util/` — **AMIR**
 
@@ -95,7 +96,8 @@ is pushed.
 | `sale/pos.jsp` | **Amir** | 🔴 Stub |
 | `sale/receipt.jsp` | **Amir** | 🔴 Stub |
 | `search.jsp` | **Yasierul** | 🔴 Stub |
-| `report/sales.jsp` | **Yasierul** | 🔴 Stub |
+| `report/stock.jsp` | Yasierul | ✅ Done — **worked example for reports** |
+| `report/sales.jsp` | **Yasierul** | 🔴 Stub — copy `stock.jsp` |
 | `WEB-INF/web.xml` | Aliff | ✅ Done |
 | `WEB-INF/error/*.jsp` | Aliff | ✅ Done |
 | `META-INF/context.xml` | Aliff | ✅ Done |
@@ -117,7 +119,7 @@ is pushed.
 | Database Integration | 10 | Ramzi | ✅ |
 | Java EE Architecture & Design | 10 | Aliff | ✅ |
 | CRUD Functionality | 10 | Amir | ✅ |
-| Search & Calculation Features | 10 | Yasierul | 🟡 badge live, rest pending |
+| Search & Calculation Features | 10 | Yasierul | 🟡 valuation report live, search + sales pending |
 | Security (Login & Password) | 10 | Aliff | ✅ |
 | Efficiency & Bug-Free Operation | 10 | Everyone | ⏳ |
 | Interface Design (JSP/JSF) | 10 | Amir | 🟡 |

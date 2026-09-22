@@ -25,8 +25,9 @@
 | `webapp/search.jsp` | 🔴 **STUB** | Results table |
 | `dao/SaleDAO.java` | 🔴 **STUB** | TODO 1–5 · includes the transaction |
 | `service/SalesCalculator.java` | 🟡 Partial | TODO 1–4 |
-| `controller/ReportServlet.java` | 🟡 Partial | TODO 1–3 |
-| `webapp/report/sales.jsp` | 🔴 **STUB** | Sales summary |
+| `controller/ReportServlet.java` | 🟡 Partial | TODO 1–3 · routing + stock report done |
+| `webapp/report/stock.jsp` | ✅ Done | Inventory valuation — **your worked example** |
+| `webapp/report/sales.jsp` | 🔴 **STUB** | Sales summary — copy `stock.jsp` |
 | `docs/USER-MANUAL.md` | 🔴 **STUB** | Report section 11 |
 
 **Report sections you own:** 5. System Scope, 8. Contribution Matrix (compile),
@@ -127,15 +128,53 @@ Do not let him block on you or you on him.
 
 **Files:** `controller/ReportServlet.java`, `webapp/report/sales.jsp`
 
+**Half of this is already built for you.** The Reports page now has two tabs,
+chosen by `?type=` on the same servlet:
+
+| Tab | URL | State |
+|-----|-----|-------|
+| Inventory valuation | `/report?type=stock` (default) | ✅ Working |
+| Sales summary | `/report?type=sales` | 🔴 Yours |
+
+The **inventory valuation** report is done and reads only the `medicines`
+table, so it works on a freshly seeded database before a single sale exists.
+That matters for you: it means the Reports page already demonstrates a real
+aggregate calculation, so your sales summary is the *enhancement* rather than
+the thing the whole criterion rests on. Build the rest without panicking about
+the deadline.
+
+Read these three together before you start — they are the same page you are
+about to write, one report earlier:
+
+- `MedicineDAO.getStockValuation()` — the aggregate query and its DTO mapping
+- `StockValuation.grandTotal()` — the total row, calculated in Java
+- `webapp/report/stock.jsp` — tabs, summary tiles, table, `<tfoot>` total
+
 - [ ] **TODO 1** — `getDailySummary()` rendered in `sales.jsp`
 - [ ] **TODO 2** — grand total revenue and overall average — this row is the
       single clearest piece of evidence for the calculation criterion
 - [ ] **TODO 3** — expiring-soon report. SQL is ready in
-      `database/03_sample_queries.sql`, section E2
+      `database/03_sample_queries.sql`, section E1
+
+> **⚠️ The averaging trap, which the examiner may well probe.** The overall
+> average sale is `total revenue ÷ total transactions`. It is **not** the mean
+> of the daily averages — the days have different transaction counts, so
+> averaging the averages over-weights the quiet days. `StockValuation`
+> hits the same trap and solves it by weighting; read the comment on
+> `grandTotal()` and do the equivalent.
 
 > The low-stock report and reorder calculation were **removed from scope**.
 > The Low/OK badge on the medicine list stays — it is computed in
 > `Medicine.isLowStock()` and needs nothing from you.
+
+**Two things to say in the viva about the valuation report**, since it is on
+your page and you will be asked:
+
+1. *Why group in SQL rather than in Java?* One round trip and one result set,
+   instead of pulling every medicine across the wire to add them up.
+2. *Why is the total row calculated in Java, then?* Because the weighted
+   average is far easier to read — and to unit-test — as Java than as a nested
+   SQL expression, and the JSP should never contain arithmetic.
 
 ## Task 6 — User Manual ⭐ (3–4 hours)
 

@@ -114,11 +114,43 @@ ORDER BY units_sold DESC
 LIMIT 10;
 
 
+-- D6. INVENTORY VALUATION - how much money is tied up in stock, by category.
+--     >>> This one is IMPLEMENTED. <<<
+--     It is MedicineDAO.SQL_STOCK_VALUATION, and it drives /report?type=stock.
+--     If you change this query, change it there too.
+--
+--     Note there is no ROUND() here, unlike D4. The rounding is done in Java
+--     with RoundingMode.HALF_UP so that every money figure in the system -
+--     whether it came from MySQL or from SalesCalculator - is rounded by one
+--     single rule. Rounding in two places with two rules is how a till ends up
+--     one sen out.
+SELECT m.category,
+       COUNT(*)                           AS item_count,
+       SUM(m.quantity_in_stock)           AS total_units,
+       SUM(m.price * m.quantity_in_stock) AS stock_value,
+       AVG(m.price)                       AS average_price
+FROM   medicines m
+GROUP BY m.category
+ORDER BY stock_value DESC;
+
+-- On the seeded data this returns 10 category rows totalling RM 25,992.20
+-- across 1,359 units. The grand-total row on the report page is computed in
+-- Java by StockValuation.grandTotal() rather than by a WITH ROLLUP clause,
+-- because the overall average price has to be WEIGHTED by each category's item
+-- count. Watch what happens if it is not:
+--
+--     weighted   (correct) : 21.23   = SUM(price) / 13
+--     unweighted (wrong)   : 22.86   = plain mean of the 10 category averages
+--
+-- Both look plausible on the page. Only one is the average price of a medicine
+-- in this pharmacy. If you are asked one question about this report, it will
+-- be this one.
+
 -- ===========================================================================
 --  SECTION E - EXPIRY REPORT  (Yasierul)
 -- ===========================================================================
 
--- E2. Medicines expiring within the next 90 days.
+-- E1. Medicines expiring within the next 90 days.
 SELECT medicine_id, name, expiry_date,
        DATEDIFF(expiry_date, CURDATE()) AS days_remaining
 FROM   medicines

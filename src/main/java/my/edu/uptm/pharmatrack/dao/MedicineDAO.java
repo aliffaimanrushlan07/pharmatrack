@@ -1,6 +1,7 @@
 package my.edu.uptm.pharmatrack.dao;
 
 import my.edu.uptm.pharmatrack.model.Medicine;
+import my.edu.uptm.pharmatrack.model.StockValuation;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -74,6 +75,27 @@ public class MedicineDAO implements GenericDAO<Medicine> {
         "SELECT m.* FROM medicines m "
       + "WHERE m.name LIKE ? OR m.category LIKE ? "
       + "ORDER BY m.name";
+
+    /**
+     * Inventory valuation, grouped by category. This is an <b>aggregate</b>
+     * query — it returns one row per category rather than one row per
+     * medicine, which is why it cannot be mapped by {@code mapRow} and has a
+     * DTO ({@link StockValuation}) of its own.
+     *
+     * <p>No {@code ROUND()} here on purpose. The rounding is done in Java with
+     * {@code RoundingMode.HALF_UP} so that every money value in the system is
+     * rounded by the same rule, whether it came from MySQL or from
+     * {@code SalesCalculator}.</p>
+     */
+    private static final String SQL_STOCK_VALUATION =
+        "SELECT m.category, "
+      + "       COUNT(*)                             AS item_count, "
+      + "       SUM(m.quantity_in_stock)             AS total_units, "
+      + "       SUM(m.price * m.quantity_in_stock)   AS stock_value, "
+      + "       AVG(m.price)                         AS average_price "
+      + "FROM   medicines m "
+      + "GROUP BY m.category "
+      + "ORDER BY stock_value DESC";
 
     private static final String SQL_DEDUCT_STOCK =
         "UPDATE medicines SET quantity_in_stock = quantity_in_stock - ? "
@@ -243,6 +265,61 @@ public class MedicineDAO implements GenericDAO<Medicine> {
             ps.setInt(1, id);
             return ps.executeUpdate() == 1;
         }
+    }
+
+
+    // ==================================================================
+    //  REPORTING
+    // ==================================================================
+
+    /**
+     * Inventory valuation report: how much money is tied up in stock, broken
+     * down by category.
+     *
+     * <p>MODULE NOTE: added for the <b>Reports</b> page. It deliberately
+     * depends on nothing but the {@code medicines} table, so the report works
+     * on a freshly seeded database before a single sale has been recorded.</p>
+     *
+     * <p>The per-row arithmetic is done by MySQL, which is the right place for
+     * it — summing 13 rows in SQL is one round trip, whereas pulling all 13
+     * medicines into Java and adding them up is 13 objects built and thrown
+     * away. The <em>grand total</em> is then computed in Java by
+     * {@link StockValuation#grandTotal(java.util.List)}, because it needs a
+     * weighted average that is clearer to read (and to defend in the viva) as
+     * Java than as a nested SQL expression.</p>
+     *
+     * @return one row per category, highest stock value first; never null
+     * @throws SQLException if the query fails
+     */
+    public List<StockValuation> getStockValuation() throws SQLException {
+        List<StockValuation> rows = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_STOCK_VALUATION);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                StockValuation v = new StockValuation();
+
+                // category is nullable in the schema, so give the JSP
+                // something printable rather than the word "null".
+                String category = rs.getString("category");
+                v.setCategory((category == null || category.trim().isEmpty())
+                              ? "Uncategorised" : category);
+
+                v.setItemCount(rs.getInt("item_count"));
+                v.setTotalUnits(rs.getInt("total_units"));
+
+                // getBigDecimal, not getDouble. SUM() of a DECIMAL column is a
+                // DECIMAL, and reading it as a double reintroduces exactly the
+                // rounding error BigDecimal exists to avoid.
+                v.setStockValue(rs.getBigDecimal("stock_value"));
+                v.setAveragePrice(rs.getBigDecimal("average_price"));
+
+                rows.add(v);
+            }
+        }
+        return rows;
     }
 
 
