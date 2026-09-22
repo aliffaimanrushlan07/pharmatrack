@@ -1,6 +1,5 @@
 package my.edu.uptm.pharmatrack.controller;
 
-import my.edu.uptm.pharmatrack.dao.MedicineDAO;
 import my.edu.uptm.pharmatrack.dao.SaleDAO;
 
 import javax.servlet.ServletException;
@@ -12,12 +11,11 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 /**
- * Controller for the low-stock and sales report pages.
+ * Controller for the sales report page.
  *
  * <p>=====================================================================<br>
- * MODULE OWNER: <b>YASIERUL</b> — Search, Business Logic &amp; Documentation<br>
- * STATUS: <b>PARTIAL</b> — low-stock report works (its DAO method is done);
- * the sales summary is a TODO.<br>
+ * MODULE OWNER: <b>YASIERUL</b> — Business Logic, Reports &amp; Documentation<br>
+ * STATUS: <b>STUB — Yasierul to implement</b><br>
  * =====================================================================</p>
  *
  * <p>This is the visible face of <b>rubric item 6, the calculation feature</b>.
@@ -26,12 +24,9 @@ import java.sql.SQLException;
  *
  * <p>Order of work:</p>
  * <ol>
- *   <li><b>DONE</b> — {@code ?type=lowstock}, using
- *       {@link MedicineDAO#findLowStock()}</li>
- *   <li>TODO 1 — {@code ?type=sales}, using {@code SaleDAO.getDailySummary()}</li>
- *   <li>TODO 2 — show grand total revenue and overall average sale</li>
- *   <li>TODO 3 — expiring-soon report (medicines within 90 days of expiry;
- *       the SQL is ready in database/03_sample_queries.sql, F2)</li>
+ *   <li>TODO 1 — {@code getDailySummary()} from SaleDAO, rendered in sales.jsp</li>
+ *   <li>TODO 2 — grand total revenue and overall average sale</li>
+ *   <li>TODO 3 — expiring-soon report (SQL ready in 03_sample_queries.sql, E2)</li>
  * </ol>
  *
  * @author Yasierul
@@ -41,12 +36,10 @@ public class ReportServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private transient MedicineDAO medicineDAO;
     private transient SaleDAO saleDAO;
 
     @Override
     public void init() throws ServletException {
-        this.medicineDAO = new MedicineDAO();
         this.saleDAO     = new SaleDAO();
     }
 
@@ -54,30 +47,18 @@ public class ReportServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String type = request.getParameter("type");
-        if (type == null) {
-            type = "lowstock";
-        }
-
         try {
-            if ("sales".equals(type)) {
-                // TODO 1 (YASIERUL): request.setAttribute("dailySummary",
-                //                        saleDAO.getDailySummary());
-                request.setAttribute("infoMessage",
-                    "Sales summary report is not implemented yet (assigned to Yasierul). "
-                  + "See ReportServlet TODO 1-2 and SaleDAO TODO 5.");
+            // TODO 1 (YASIERUL): request.setAttribute("dailySummary",
+            //                    saleDAO.getDailySummary());
+            request.setAttribute("infoMessage",
+                "Sales summary report is not implemented yet (assigned to Yasierul). "
+              + "See ReportServlet TODO 1-2 and SaleDAO TODO 5.");
 
-                request.getRequestDispatcher("/report/sales.jsp").forward(request, response);
+            request.getRequestDispatcher("/report/sales.jsp").forward(request, response);
 
-            } else {
-                // WORKING: low-stock report.
-                request.setAttribute("lowStockList", medicineDAO.findLowStock());
-                request.getRequestDispatcher("/report/low-stock.jsp").forward(request, response);
-            }
-
-        } catch (SQLException ex) {
+        } catch (Exception ex) {
             request.setAttribute("errorMessage", "Could not build report: " + ex.getMessage());
-            request.getRequestDispatcher("/report/low-stock.jsp").forward(request, response);
+            request.getRequestDispatcher("/report/sales.jsp").forward(request, response);
         }
     }
 }

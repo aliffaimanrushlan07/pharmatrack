@@ -22,9 +22,9 @@ import java.io.IOException;
  * Together they are authentication and authorisation, and naming them
  * correctly in the report is worth doing — they are commonly confused.</p>
  *
- * <p><b>Why this matters for the demo.</b> Hiding the "Manage Suppliers" link
- * from cashiers in the JSP is <i>not</i> security — a cashier who types the
- * URL straight into the address bar still gets in. This filter is what
+ * <p><b>Why this matters for the demo.</b> Hiding an admin-only link from
+ * cashiers in the JSP is <i>not</i> security — a cashier who types the URL
+ * straight into the address bar still gets in. This filter is what
  * actually stops them. Demonstrating exactly that (log in as cashier, type
  * the admin URL, get refused) is a strong 30 seconds of your presentation.</p>
  *
@@ -42,14 +42,14 @@ import java.io.IOException;
  * </ol>
  *
  * <p><b>TODO 2 (ALIFF)</b> — once it works, widen {@code urlPatterns} below to
- * cover every admin-only URL. Coordinate with Amir first: he owns the supplier
+ * cover every admin-only URL. Coordinate with Amir first: he owns the medicine
  * screens and needs to know they are about to become admin-only.</p>
  *
  * @author Aliff
  */
 @WebFilter(filterName = "RoleFilter", urlPatterns = {
     // TODO 2: add the rest once the filter body works.
-    //   "/supplier/*",
+    //   "/medicine",
     //   "/user/*",
     "/admin/*"
 })

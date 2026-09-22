@@ -76,25 +76,6 @@
                        value="${medicine.expiryDate}">
             </div>
 
-            <div class="form-row">
-                <label for="supplierId">Supplier</label>
-                <select id="supplierId" name="supplierId">
-                    <option value="0">-- none --</option>
-                    <c:forEach var="s" items="${suppliers}">
-                        <option value="${s.supplierId}"
-                                ${medicine.supplierId eq s.supplierId ? 'selected' : ''}>
-                            <c:out value="${s.name}"/>
-                        </option>
-                    </c:forEach>
-                </select>
-                <c:if test="${empty suppliers}">
-                    <div class="hint" style="color:#d97706">
-                        Supplier list is empty &mdash; <strong>SupplierDAO.findAll()</strong>
-                        is not implemented yet (Amir, TODO 1).
-                    </div>
-                </c:if>
-            </div>
-
         </div>
 
         <div class="form-actions">

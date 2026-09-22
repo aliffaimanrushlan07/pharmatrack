@@ -1,11 +1,13 @@
-# Amir — CRUD & Interface Module
+# Amir — CRUD, Interface & Point of Sale
 
 > You own the biggest visible surface of the system. Two rubric criteria are
 > yours outright — **CRUD Functionality (10)** and **Interface Design (10)** —
 > and the examiner spends most of the demo looking at your screens.
 >
-> The good news: the Medicine module is finished and working as your worked
-> example. Suppliers is the same job with fewer fields.
+> **Scope changed:** supplier management was removed from the system. In its
+> place you now own the **point-of-sale screen**, which is the single best
+> thing to lead the live demo with. Medicine CRUD is already finished and
+> working — use it as your worked example.
 
 ---
 
@@ -18,10 +20,9 @@
 | `webapp/medicine/form.jsp` | ✅ Done | Your template for form pages |
 | `webapp/css/style.css` | ✅ Done | Tweak freely, it is yours |
 | `webapp/includes/*.jspf` | ✅ Done | Shared header/footer |
-| `dao/SupplierDAO.java` | 🔴 **STUB** | TODO 1–6 |
-| `controller/SupplierServlet.java` | 🔴 **STUB** | TODO 1–6 |
-| `webapp/supplier/list.jsp` | 🔴 **STUB** | Copy medicine/list.jsp |
-| `webapp/supplier/form.jsp` | 🔴 **STUB** | Copy medicine/form.jsp |
+| `controller/SaleServlet.java` | 🔴 **STUB** | TODO 1–5 · the point-of-sale screen |
+| `webapp/sale/pos.jsp` | 🔴 **STUB** | The till screen |
+| `webapp/sale/receipt.jsp` | 🔴 **STUB** | Printable receipt |
 | `util/ValidationUtil.java` | 🟡 Partial | TODO 1–3 |
 | `webapp/dashboard.jsp` | 🟡 Partial | Move it behind a servlet |
 
@@ -30,70 +31,45 @@
 
 ---
 
-## Task 1 — `SupplierDAO` ⭐ START HERE (1–2 hours)
+## Task 1 — Point of sale ⭐ START HERE (3–4 hours)
 
-**File:** `src/main/java/my/edu/uptm/pharmatrack/dao/SupplierDAO.java`
+**Files:** `controller/SaleServlet.java`, `webapp/sale/pos.jsp`, `webapp/sale/receipt.jsp`
 
-All six SQL statements are already written and tested at the top of the file.
-You are writing the Java around them. Open `MedicineDAO.java` in a split window
-(right-click the tab → *New Document Tab Group*) and work through in this order:
+The most interactive screen in the system, and the one to open your demo with.
 
-- [ ] **TODO 1 — `mapRow()`** · do this first, everything depends on it.
-      Seven lines: `new Supplier()`, then a setter per column.
-      Once it is done, `findAll()` works immediately — the rest of that method
-      is already written for you.
-- [ ] **TODO 2 — `findById()`** · `ps.setInt(1, id)`, then `rs.next() ? mapRow(rs) : null`.
-- [ ] **TODO 3 — `insert()`** · needs `Statement.RETURN_GENERATED_KEYS`.
-- [ ] **TODO 4 — `update()`** · ⚠️ five SET params are 1–5, the WHERE param is 6.
-      Off-by-one here is the most common bug in this kind of code.
-- [ ] **TODO 5 — `delete()`** · straightforward.
-- [ ] **TODO 6 — `search()`** · wrap the keyword: `"%" + keyword.trim() + "%"`,
-      then `setString`. Never put the `%` into the SQL string itself.
+**Design decision, already made and worth explaining in the report:** the
+basket lives in the **HTTP session** as a `Sale` object until the cashier
+presses *Complete sale*. Nothing touches the database until the sale is final,
+so an abandoned basket leaves no orphan rows and no wrongly-deducted stock.
 
-**Test as you go.** After TODO 1 and 2, run the app and open the *Add medicine*
-form — the supplier dropdown should fill up. That is your DAO working, before
-you have written a single supplier page.
+- [ ] **TODO 1** — `?action=add` · get the `Sale` from the session (create if
+      absent), add a `SaleItem`, put it back
+- [ ] **TODO 2** — `?action=remove` and `?action=clear`
+- [ ] **TODO 3** — running total via `SalesCalculator.calculateSubtotal()`
+- [ ] **TODO 4** — `?action=complete` · calls `saleDAO.insertSale()`
+- [ ] **TODO 5** — receipt page after a successful sale
 
----
+Layout that works:
 
-## Task 2 — `SupplierServlet` (1–2 hours)
+```
++-------------------------+-------------------------+
+|  Search / pick medicine |  Basket                 |
+|  name, price, stock     |  lines + subtotals      |
+|  [ qty ]  [ Add ]       |  ---------------------  |
+|                         |  TOTAL     RM 57.90     |
+|                         |  [ Complete sale ]      |
++-------------------------+-------------------------+
+```
 
-**File:** `src/main/java/my/edu/uptm/pharmatrack/controller/SupplierServlet.java`
+**Validate stock twice** — when adding to the basket *and* at completion.
+Checking only at add time leaves a gap where another cashier sells the last
+packet while this basket is still open.
 
-A direct translation of `MedicineServlet`, minus the date and price handling.
+**You depend on Yasierul** for `SaleDAO.insertSale()` (his TODO 3) and
+`SalesCalculator` (his TODOs 1–4). Agree an interface early and work in
+parallel — do not wait for him to finish before starting the JSPs.
 
-- [ ] **TODO 1** — `doGet` switch on `?action=`: `new` / `edit` / `delete` / default `list`
-- [ ] **TODO 2** — `listSuppliers()` → forward to `/supplier/list.jsp`
-- [ ] **TODO 3** — `showForm()` → forward to `/supplier/form.jsp`
-- [ ] **TODO 4** — `doPost` → `saveSupplier()`, insert when `supplierId == 0`, else update
-- [ ] **TODO 5** — `deleteSupplier()`
-- [ ] **TODO 6** — server-side validation using `ValidationUtil`
-
-**Two things not to skip:**
-
-1. **POST-redirect-GET.** After a successful save, `sendRedirect` — do not
-   `forward`. Otherwise F5 on the result page re-submits the form and creates a
-   duplicate record. An examiner will press F5.
-2. **Validate on the server, not just in HTML.** The `required` attribute on an
-   input is a convenience for honest users; anyone can bypass it. `MedicineServlet`
-   has a `validate()` method showing the pattern.
-
----
-
-## Task 3 — Supplier JSP pages (1–2 hours)
-
-- [ ] `webapp/supplier/list.jsp` — copy `medicine/list.jsp`, change the columns to
-      `# / Name / Contact person / Phone / Email / Medicines / Actions`
-- [ ] `webapp/supplier/form.jsp` — copy `medicine/form.jsp`, fields:
-      name (required), contact person, phone, email, address
-- [ ] Delete the `todo-banner` div from both once they work
-
-Keep the three habits from the examples: **no Java in the JSP**, **everything
-through `<c:out>`**, and **a proper empty state** instead of a bare empty table.
-
----
-
-## Task 4 — `ValidationUtil` (30 min)
+## Task 2 — `ValidationUtil` (30 min)
 
 **File:** `src/main/java/my/edu/uptm/pharmatrack/util/ValidationUtil.java`
 
@@ -107,7 +83,7 @@ through `<c:out>`**, and **a proper empty state** instead of a bare empty table.
 
 ---
 
-## Task 5 — Use Case Diagram ⭐ (1–2 hours)
+## Task 3 — Use Case Diagram ⭐ (1–2 hours)
 
 **Report section 6.1. Part of the 20-mark diagram criterion.**
 
@@ -125,7 +101,7 @@ use cases already listed to match the code.
 
 ---
 
-## Task 6 — Activity Diagram ⭐ (1–2 hours)
+## Task 4 — Activity Diagram ⭐ (1–2 hours)
 
 **Report section 6.2. Same 20-mark criterion.**
 
@@ -156,7 +132,7 @@ start → search medicine → [in stock?] ─no→ show error ──┐
 
 ---
 
-## Task 7 — Interface Design section (1 hour)
+## Task 5 — Interface Design section (1 hour)
 
 **Report section 7.** The brief requires **at least five forms/pages**. Take a
 clean screenshot of each, with realistic data — not `test test test`:
@@ -165,10 +141,10 @@ clean screenshot of each, with realistic data — not `test test test`:
 2. Dashboard
 3. Medicine list (showing the search box and a Low badge)
 4. Medicine add/edit form
-5. Supplier list
-6. Point of sale *(Yasierul's — coordinate)*
+5. Point of sale — the basket with a running total
+6. Receipt
 7. Search page *(Yasierul's)*
-8. Low-stock report *(Yasierul's)*
+8. Sales summary report *(Yasierul's)*
 
 For each: a caption saying what it does, which servlet serves it, and which
 rubric requirement it satisfies.
@@ -192,5 +168,6 @@ rubric requirement it satisfies.
 
 - Why one servlet per entity with `?action=` routing, rather than five servlets
 - The POST-redirect-GET problem and how you found it
-- Why server-side validation matters when the form already has `required`
+- Keeping the basket in the session rather than writing to the database as you go
+- Coordinating with Yasierul across the SaleServlet / SaleDAO boundary
 - What you would design differently with more time

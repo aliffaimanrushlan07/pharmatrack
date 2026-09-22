@@ -1,7 +1,7 @@
 <%--
     Receipt shown after a completed sale.
-    OWNER: YASIERUL
-    STATUS: STUB - Yasierul to build.
+    OWNER: AMIR
+    STATUS: STUB - Amir to build.
 
     Print-friendly is a nice touch and costs two lines:
         <style media="print"> .navbar, .footer, .btn { display: none; } </style>
@@ -18,7 +18,7 @@
 <div class="page-header"><div><h1>Receipt</h1></div></div>
 
 <div class="todo-banner">
-    <strong>Assigned to Yasierul &mdash; not built yet</strong>
+    <strong>Assigned to Amir &mdash; not built yet</strong>
     Show ${sale} with its line items, each subtotal, and the grand total.
 </div>
 

@@ -1,7 +1,6 @@
 package my.edu.uptm.pharmatrack.controller;
 
 import my.edu.uptm.pharmatrack.dao.MedicineDAO;
-import my.edu.uptm.pharmatrack.dao.SupplierDAO;
 import my.edu.uptm.pharmatrack.model.Medicine;
 import my.edu.uptm.pharmatrack.util.ValidationUtil;
 
@@ -25,9 +24,8 @@ import java.util.logging.Logger;
  *
  * <p><b>&gt;&gt;&gt; THIS FILE IS THE WORKED EXAMPLE FOR EVERY OTHER SERVLET. &lt;&lt;&lt;</b></p>
  *
- * <p>{@code SupplierServlet}, {@code SaleServlet}, {@code SearchServlet} and
- * {@code ReportServlet} are all stubs that follow this exact shape. Keep this
- * open beside yours.</p>
+ * <p>{@code SaleServlet}, {@code SearchServlet} and {@code ReportServlet} are
+ * all stubs that follow this exact shape. Keep this open beside yours.</p>
  *
  * <p><b>The "action" routing pattern.</b> One servlet handles a whole entity by
  * switching on an {@code ?action=} parameter, instead of five separate
@@ -57,12 +55,10 @@ public class MedicineServlet extends HttpServlet {
     private static final Logger LOGGER = Logger.getLogger(MedicineServlet.class.getName());
 
     private transient MedicineDAO medicineDAO;
-    private transient SupplierDAO supplierDAO;
 
     @Override
     public void init() throws ServletException {
         this.medicineDAO = new MedicineDAO();
-        this.supplierDAO = new SupplierDAO();
     }
 
     // ==================================================================
@@ -142,18 +138,6 @@ public class MedicineServlet extends HttpServlet {
 
         request.setAttribute("medicine", medicine);
 
-        // The form has a supplier dropdown, so the view needs the supplier list.
-        // SupplierDAO is still a stub (Amir, TODO 1) — until it is written this
-        // throws UnsupportedOperationException, so we degrade gracefully rather
-        // than showing a 500 page to the rest of the team.
-        try {
-            request.setAttribute("suppliers", supplierDAO.findAll());
-        } catch (UnsupportedOperationException ex) {
-            LOGGER.warning("SupplierDAO.findAll() not implemented yet — "
-                         + "supplier dropdown will be empty. See SupplierDAO TODO 1.");
-            request.setAttribute("suppliers", java.util.Collections.emptyList());
-        }
-
         forward(request, response, "/medicine/form.jsp");
     }
 
@@ -184,7 +168,6 @@ public class MedicineServlet extends HttpServlet {
         medicine.setQuantityInStock(ValidationUtil.parseInt(request.getParameter("quantityInStock"), 0));
         medicine.setReorderLevel(ValidationUtil.parseInt(request.getParameter("reorderLevel"), 10));
         medicine.setExpiryDate(parseDate(request.getParameter("expiryDate")));
-        medicine.setSupplierId(ValidationUtil.parseInt(request.getParameter("supplierId"), 0));
 
         // --- Server-side validation ------------------------------------------
         // The JSP also validates with HTML5 'required' attributes, but that is

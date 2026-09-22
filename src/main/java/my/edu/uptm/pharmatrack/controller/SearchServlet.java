@@ -14,7 +14,7 @@ import java.io.IOException;
  * Controller for the unified search page.
  *
  * <p>=====================================================================<br>
- * MODULE OWNER: <b>YASIERUL</b> — Search, Business Logic &amp; Documentation<br>
+ * MODULE OWNER: <b>YASIERUL</b> — Search &amp; Documentation<br>
  * STATUS: <b>STUB — Yasierul to implement</b><br>
  * =====================================================================</p>
  *

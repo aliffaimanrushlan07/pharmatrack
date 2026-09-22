@@ -16,10 +16,13 @@ import java.util.List;
  * the interface rather than a concrete class.</p>
  *
  * <p>Mention this interface explicitly in the report's Class Diagram section
- * (6.4) — show {@code MedicineDAO}, {@code SupplierDAO}, {@code SaleDAO} and
- * {@code UserDAO} all realising {@code GenericDAO}.</p>
+ * (6.4) — show {@code MedicineDAO} and {@code UserDAO} realising
+ * {@code GenericDAO}. ({@code SaleDAO} deliberately does not — a sale is
+ * written as a header plus its lines in one transaction, which does not fit
+ * the single-entity {@code insert(T)} signature. Knowing when a pattern does
+ * not apply is worth a sentence in the report.)</p>
  *
- * @param <T> the model type this DAO reads and writes (Medicine, Supplier, …)
+ * @param <T> the model type this DAO reads and writes (Medicine, User, …)
  *
  * @author Ramzi
  */

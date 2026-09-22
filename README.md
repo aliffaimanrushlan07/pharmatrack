@@ -15,9 +15,9 @@ Everything in this repository is tagged with its owner. Look for the
 | Member       | Module                                    | Your files                                                                                                        | Your brief |
 |--------------|-------------------------------------------|-------------------------------------------------------------------------------------------------------------------|------------|
 | **Ramzi**    | Database Design & Data Access Layer       | `database/*.sql`, `dao/DBConnection.java`, `dao/GenericDAO.java`, `dao/MedicineDAO.java`, `model/*.java`            | [brief](docs/tasks/ramzi-database-dao.md) |
-| **Amir**     | CRUD & Interface Module                   | `dao/SupplierDAO.java`, `controller/SupplierServlet.java`, `controller/MedicineServlet.java`, all `*.jsp`, `css/style.css`, `util/ValidationUtil.java` | [brief](docs/tasks/amir-crud-ui.md) |
+| **Amir**     | CRUD, Interface & Point of Sale           | `controller/MedicineServlet.java`, `controller/SaleServlet.java`, all `*.jsp`, `css/style.css`, `util/ValidationUtil.java` | [brief](docs/tasks/amir-crud-sale.md) |
 | **Aliff**    | Authentication, Security & Architecture   | `security/*.java`, `controller/LoginServlet.java`, `controller/LogoutServlet.java`, `login.jsp`, `pom.xml`, `web.xml` | [brief](docs/tasks/aliff-auth-security.md) |
-| **Yasierul** | Search, Business Logic & Documentation    | `dao/SaleDAO.java`, `service/*.java`, `controller/{Sale,Search,Report}Servlet.java`, `sale/*.jsp`, `search.jsp`, `report/*.jsp`, `docs/USER-MANUAL.md` | [brief](docs/tasks/yasierul-search-reporting.md) |
+| **Yasierul** | Business Logic, Reports & Documentation   | `dao/SaleDAO.java`, `service/SalesCalculator.java`, `controller/{Search,Report}Servlet.java`, `search.jsp`, `report/sales.jsp`, `docs/USER-MANUAL.md` | [brief](docs/tasks/yasierul-logic-reporting.md) |
 
 Full mapping including report sections: [`docs/MODULE-OWNERSHIP.md`](docs/MODULE-OWNERSHIP.md)
 
@@ -27,20 +27,20 @@ Full mapping including report sections: [`docs/MODULE-OWNERSHIP.md`](docs/MODULE
 
 | # | Rubric requirement                | Status         | Owner    |
 |---|-----------------------------------|----------------|----------|
-| 1 | Relational tables (≥2)            | ✅ Done — 5 tables + 1 view | Ramzi |
-| 2 | Forms / pages (≥5)                | 🟡 4 of 8 built | Amir |
-| 3 | CRUD operations                   | 🟡 Medicine done, Supplier pending | Amir |
+| 1 | Relational tables (≥2)            | ✅ Done — 4 tables incl. junction table | Ramzi |
+| 2 | Forms / pages (≥5)                | 🟡 5 of 8 built | Amir |
+| 3 | CRUD operations                   | ✅ Done — full Medicine CRUD | Amir |
 | 4 | Search functionality              | 🔴 Not started | Yasierul |
 | 5 | Login with encrypted passwords    | ✅ Done — BCrypt | Aliff |
-| 6 | Business logic / calculation      | 🟡 Core total done, rest pending | Yasierul |
+| 6 | Business logic / calculation      | 🟡 Low-stock badge live; sale maths pending | Yasierul |
 | 7 | Enterprise design (MVC + DAO)     | ✅ Structure in place | Aliff |
 | 8 | Bug-free and efficient            | ⏳ Ongoing | Everyone |
 
 ✅ done 🟡 partial 🔴 not started
 
-**What already works end to end:** login → dashboard → medicine list → add / edit / delete a medicine → search medicines → low-stock report → logout.
+**What already works end to end:** login → dashboard → medicine list → add / edit / delete a medicine → search medicines → logout. The Low/OK badge on the medicine list is live.
 
-**What is still stubbed:** supplier CRUD, point of sale, the search page, the sales summary report, and role-based access control. Each stub file has numbered `TODO`s naming its owner.
+**What is still stubbed:** point of sale, the search page, the sales summary report, and role-based access control. Each stub file has numbered `TODO`s naming its owner.
 
 ---
 
@@ -86,7 +86,7 @@ Step-by-step with screenshots and troubleshooting: [`docs/SETUP-NETBEANS.md`](do
 ```
 PharmaTrack/
 ├── database/                    ← SQL scripts  (Ramzi)
-│   ├── 01_schema.sql                 tables, keys, the low-stock view
+│   ├── 01_schema.sql                 4 tables, keys, constraints
 │   ├── 02_seed_data.sql              sample data + test accounts
 │   └── 03_sample_queries.sql         every query the DAOs run, testable in Workbench
 │
@@ -102,7 +102,7 @@ PharmaTrack/
 └── src/main/
     ├── java/my/edu/uptm/pharmatrack/
     │   ├── model/       POJOs, one per table          (Ramzi)
-    │   ├── dao/         database access, one per table (Ramzi + Amir + Yasierul)
+    │   ├── dao/         database access, one per table (Ramzi + Yasierul)
     │   ├── service/     business logic & calculations  (Yasierul)
     │   ├── security/    hashing, auth filter, role filter (Aliff)
     │   ├── controller/  servlets — the C in MVC        (all)
@@ -162,6 +162,12 @@ Four files are finished specifically so the rest can be copied from them. When y
 | a list page              | `webapp/medicine/list.jsp`               |
 | a form page              | `webapp/medicine/form.jsp`               |
 
+### Scope note
+
+Supplier management and the automatic low-stock report were **removed from
+scope** by group decision. `medicines.reorder_level` is kept solely to drive
+the Low/OK badge on the medicine list.
+
 ---
 
 ## Working together
@@ -172,9 +178,9 @@ conflicts: [`CONTRIBUTING.md`](CONTRIBUTING.md)
 Short version:
 
 ```bash
-git checkout -b feat/supplier-crud        # branch per feature, never push to main
-git commit -m "feat(supplier): implement SupplierDAO.findAll"
-git push -u origin feat/supplier-crud     # then open a Pull Request
+git checkout -b feat/point-of-sale        # branch per feature, never push to main
+git commit -m "feat(sale): add basket handling to SaleServlet"
+git push -u origin feat/point-of-sale     # then open a Pull Request
 ```
 
 **Commit regularly under your own name.** The report needs an Individual

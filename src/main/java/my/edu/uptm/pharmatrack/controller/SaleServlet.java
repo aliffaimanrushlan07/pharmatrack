@@ -15,8 +15,8 @@ import java.io.IOException;
  * a sale.
  *
  * <p>=====================================================================<br>
- * MODULE OWNER: <b>YASIERUL</b> — Search, Business Logic &amp; Documentation<br>
- * STATUS: <b>STUB — Yasierul to implement</b><br>
+ * MODULE OWNER: <b>AMIR</b> — Sale &amp; Reporting Module<br>
+ * STATUS: <b>STUB — Amir to implement</b><br>
  * DEPENDS ON: {@link SaleDAO} and {@code SalesCalculator} (both yours)<br>
  * =====================================================================</p>
  *
@@ -52,7 +52,7 @@ import java.io.IOException;
  *   <li>TODO 5 — receipt page after a successful sale</li>
  * </ol>
  *
- * @author Yasierul
+ * @author Amir
  */
 @WebServlet(name = "SaleServlet", urlPatterns = {"/sale"})
 public class SaleServlet extends HttpServlet {
@@ -75,11 +75,11 @@ public class SaleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // TODO 1-5 (YASIERUL): route on ?action= as described in the class
+        // TODO 1-5 (AMIR): route on ?action= as described in the class
         // comment above. Pattern to copy: MedicineServlet.doGet().
 
         request.setAttribute("errorMessage",
-            "Point-of-sale module is not implemented yet (assigned to Yasierul). "
+            "Point-of-sale module is not implemented yet (assigned to Amir). "
           + "See SaleServlet TODO 1-5 and SaleDAO TODO 1-5.");
 
         request.getRequestDispatcher("/sale/pos.jsp").forward(request, response);

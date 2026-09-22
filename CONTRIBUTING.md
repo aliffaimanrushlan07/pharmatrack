@@ -33,13 +33,13 @@ be attributed to you on GitHub and your contribution will look empty.
 git checkout main
 git pull                                  # always start from the latest
 
-git checkout -b feat/supplier-crud        # your branch
+git checkout -b feat/point-of-sale        # your branch
 
 # ... work ...
 
 git add .
-git commit -m "feat(supplier): implement SupplierDAO.findAll and mapRow"
-git push -u origin feat/supplier-crud
+git commit -m "feat(sale): add basket handling to SaleServlet"
+git push -u origin feat/point-of-sale
 ```
 
 Then on GitHub: **Compare & pull request** → describe what you did → ask one
@@ -50,7 +50,7 @@ other member to review → merge once approved.
 ## Branch names
 
 ```
-feat/<what>      a new feature       feat/supplier-crud
+feat/<what>      a new feature       feat/point-of-sale
 fix/<what>       a bug fix           fix/login-redirect-loop
 docs/<what>      documentation       docs/user-manual
 style/<what>     CSS / layout only   style/dashboard-cards
@@ -76,12 +76,12 @@ weeks becomes a merge conflict.
 | `refactor` | restructuring with no behaviour change |
 | `test`  | tests                                 |
 
-Scope is your module: `medicine`, `supplier`, `sale`, `search`, `auth`, `db`, `ui`, `report`.
+Scope is your module: `medicine`, `sale`, `search`, `auth`, `db`, `ui`, `report`.
 
 Good:
 
 ```
-feat(supplier): implement SupplierDAO CRUD methods
+feat(sale): implement SaleDAO.insertSale transaction
 fix(sale): roll back transaction when stock is insufficient
 docs(manual): add screenshots for the login section
 style(ui): align action buttons in the medicine table

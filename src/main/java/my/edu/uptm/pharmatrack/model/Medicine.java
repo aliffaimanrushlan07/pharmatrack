@@ -9,6 +9,10 @@ import java.sql.Date;
  *
  * <p>MODULE OWNER: <b>RAMZI</b> — Database Design &amp; Data Access Layer.</p>
  *
+ * <p>{@code reorderLevel} is kept purely to drive the Low/OK badge on the
+ * medicine list via {@link #isLowStock()}. The automatic low-stock report and
+ * reorder-quantity suggestion were removed from the system scope.</p>
+ *
  * <p>{@code price} is a {@link BigDecimal}, not a {@code double}. Money must
  * never be stored in a floating-point type — {@code 0.1 + 0.2} is not
  * {@code 0.3} in binary floating point, and a pharmacy till that is one sen
@@ -27,17 +31,13 @@ public class Medicine implements Serializable {
     private int        quantityInStock;
     private int        reorderLevel;
     private Date       expiryDate;
-    private int        supplierId;
-
-    /** Joined in from the suppliers table for display — not a medicines column. */
-    private String     supplierName;
 
     public Medicine() {
         this.price = BigDecimal.ZERO;
     }
 
     /**
-     * Business rule used by the low-stock report (Yasierul's module).
+     * Business rule behind the Low/OK badge on the medicine list.
      *
      * @return true when stock has fallen to or below the reorder threshold.
      */
@@ -66,11 +66,6 @@ public class Medicine implements Serializable {
     public Date getExpiryDate()                     { return expiryDate; }
     public void setExpiryDate(Date expiryDate)      { this.expiryDate = expiryDate; }
 
-    public int getSupplierId()                      { return supplierId; }
-    public void setSupplierId(int supplierId)       { this.supplierId = supplierId; }
-
-    public String getSupplierName()                 { return supplierName; }
-    public void setSupplierName(String s)           { this.supplierName = s; }
 
     @Override
     public String toString() {

@@ -11,6 +11,9 @@ that route takes about 30 seconds and guarantees it matches the code.
 **Exactly as implemented in `database/01_schema.sql`.** Use these names — the
 draft report has older ones.
 
+> **Four tables.** Suppliers were removed from scope. `reorder_level` stays on
+> `medicines` purely to drive the Low/OK badge — there is no low-stock report.
+
 ### users
 | Attribute | Type | Key |
 |-----------|------|-----|
@@ -22,16 +25,6 @@ draft report has older ones.
 | is_active | TINYINT(1) | |
 | created_at | DATETIME | |
 
-### suppliers
-| Attribute | Type | Key |
-|-----------|------|-----|
-| supplier_id | INT AUTO_INCREMENT | **PK** |
-| name | VARCHAR(100) | |
-| contact_person | VARCHAR(100) | |
-| phone | VARCHAR(30) | |
-| email | VARCHAR(100) | |
-| address | VARCHAR(255) | |
-
 ### medicines
 | Attribute | Type | Key |
 |-----------|------|-----|
@@ -42,7 +35,6 @@ draft report has older ones.
 | quantity_in_stock | INT | |
 | reorder_level | INT | |
 | expiry_date | DATE | nullable |
-| supplier_id | INT | **FK** → suppliers |
 
 ### sales
 | Attribute | Type | Key |
@@ -67,7 +59,6 @@ draft report has older ones.
 ## Relationships (crow's-foot notation)
 
 ```
-suppliers  ──1────────<  medicines      one supplier supplies many medicines
 users      ──1────────<  sales          one cashier records many sales
 sales      ──1────────<  sale_items     one receipt has many lines
 medicines  ──1────────<  sale_items     one medicine appears on many lines
@@ -79,7 +70,6 @@ Referential actions to label on the diagram:
 
 | Relationship | ON DELETE | Why |
 |--------------|-----------|-----|
-| medicines → suppliers | SET NULL | Deleting a supplier should not delete its medicines |
 | sales → users | RESTRICT | A cashier with sales history cannot be deleted |
 | sale_items → sales | CASCADE | Deleting a receipt removes its lines |
 | sale_items → medicines | RESTRICT | A medicine on a past receipt cannot be deleted |
@@ -88,7 +78,7 @@ Referential actions to label on the diagram:
 
 ## Worth saying in the text
 
-- **Why five tables when the brief required two.** `sale_items` is a junction
+- **Why four tables when the brief required two.** `sale_items` is a junction
   table resolving the many-to-many between sales and medicines — the textbook
   case, and the reason a sale can contain several different medicines.
 - **Why `unit_price` is duplicated onto `sale_items`.** It is copied at the

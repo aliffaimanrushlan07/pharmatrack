@@ -1,7 +1,7 @@
 <%--
     Point of sale - the till screen.
-    OWNER: YASIERUL (Search, Business Logic & Documentation)
-    STATUS: STUB - Yasierul to build.
+    OWNER: AMIR (Sale & Reporting Module)
+    STATUS: STUB - Amir to build.
 
     This is the most interactive page in the system and the best one to lead
     the live demo with. Layout that works well:
@@ -26,13 +26,13 @@
 </div>
 
 <div class="todo-banner">
-    <strong>Assigned to Yasierul &mdash; not built yet</strong>
+    <strong>Assigned to Amir &mdash; not built yet</strong>
     Needs <code>SaleDAO</code> TODO 1-5 (especially the transaction in
     <code>insertSale</code>) and <code>SaleServlet</code> TODO 1-5.
-    Full brief: <code>docs/tasks/yasierul-search-reporting.md</code>
+    Full brief: <code>docs/tasks/amir-crud-sale.md</code>
 </div>
 
-<%-- TODO (YASIERUL):
+<%-- TODO (AMIR):
      - medicine picker on the left (reuse MedicineDAO.search)
      - basket table on the right, read from the session attribute "currentSale"
      - running total from SalesCalculator.calculateSubtotal()

@@ -12,7 +12,7 @@ import java.util.Map;
  * tables.
  *
  * <p>=====================================================================<br>
- * MODULE OWNER: <b>YASIERUL</b> — Search, Business Logic &amp; Documentation<br>
+ * MODULE OWNER: <b>YASIERUL</b> — Business Logic, Reports &amp; Documentation<br>
  * STATUS: <b>STUB — Yasierul to implement</b><br>
  * =====================================================================</p>
  *

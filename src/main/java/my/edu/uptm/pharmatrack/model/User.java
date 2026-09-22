@@ -20,7 +20,7 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /** Role constant — full access, can manage medicines, suppliers and users. */
+    /** Role constant — full access, can manage medicines and users. */
     public static final String ROLE_ADMIN = "ADMIN";
     /** Role constant — can process sales and search, but not manage records. */
     public static final String ROLE_CASHIER = "CASHIER";

@@ -19,37 +19,38 @@ criterion.
 │ - role : String             │   │ - quantityInStock : int     │
 │ - active : boolean          │   │ - reorderLevel : int        │
 ├─────────────────────────────┤   │ - expiryDate : Date         │
-│ + isAdmin() : boolean       │   │ - supplierId : int          │
-│ + getters/setters           │   ├─────────────────────────────┤
-└─────────────────────────────┘   │ + isLowStock() : boolean    │
-                                  │ + getters/setters           │
-┌─────────────────────────────┐   └─────────────────────────────┘
-│ Supplier                    │
-├─────────────────────────────┤   ┌─────────────────────────────┐
-│ - supplierId : int          │   │ Sale                        │
-│ - name : String             │   ├─────────────────────────────┤
-│ - contactPerson : String    │   │ - saleId : int              │
-│ - phone, email, address     │   │ - saleDate : Timestamp      │
-└─────────────────────────────┘   │ - userId : int              │
-                                  │ - totalAmount : BigDecimal  │
-┌─────────────────────────────┐   │ - items : List<SaleItem>    │
-│ SaleItem                    │   ├─────────────────────────────┤
-├─────────────────────────────┤◆──│ + calculateTotal()          │
-│ - saleItemId : int          │   │ + addItem(SaleItem)         │
-│ - saleId : int              │   │ + getTotalUnits() : int     │
-│ - medicineId : int          │   └─────────────────────────────┘
-│ - quantity : int            │
-│ - unitPrice : BigDecimal    │      ◆ = composition
-├─────────────────────────────┤      SaleItems cannot exist
-│ + getSubtotal() : BigDecimal│      without their Sale
-└─────────────────────────────┘
+│ + isAdmin() : boolean       │   ├─────────────────────────────┤
+│ + getters/setters           │   │ + isLowStock() : boolean    │
+└─────────────────────────────┘   │ + getters/setters           │
+                                  └─────────────────────────────┘
+
+┌─────────────────────────────┐   ┌─────────────────────────────┐
+│ SaleItem                    │   │ Sale                        │
+├─────────────────────────────┤   ├─────────────────────────────┤
+│ - saleItemId : int          │   │ - saleId : int              │
+│ - saleId : int              │   │ - saleDate : Timestamp      │
+│ - medicineId : int          │   │ - userId : int              │
+│ - quantity : int            │   │ - totalAmount : BigDecimal  │
+│ - unitPrice : BigDecimal    │   │ - items : List<SaleItem>    │
+├─────────────────────────────┤   ├─────────────────────────────┤
+│ + getSubtotal() : BigDecimal│◆──│ + calculateTotal()          │
+└─────────────────────────────┘   │ + addItem(SaleItem)         │
+                                  │ + getTotalUnits() : int     │
+       ◆ = composition            └─────────────────────────────┘
+       SaleItems cannot exist
+       without their Sale
 ```
 
----
+> **Four model classes.** `Supplier` was removed from scope.
+> `Medicine.isLowStock()` compares `quantityInStock` against `reorderLevel` —
+> it drives the Low/OK badge on the medicine list and is the one calculation
+> that is already working.
 
 ## Layer 2 — dao ⭐ the important part
 
-**Show `GenericDAO<T>` as an interface with dashed realisation arrows.** This is
+**Show `GenericDAO<T>` as an interface with dashed realisation arrows.**
+
+> Suppliers and `InventoryService` are **out of scope** — do not draw them. This is
 the visible evidence for the brief's *"implementing classes and interfaces"*
 requirement. Do not leave it out.
 
@@ -65,18 +66,19 @@ requirement. Do not leave it out.
           │ + delete(int) : boolean          │
           └────────────────△─────────────────┘
                            ╎  (dashed = realisation)
-        ┌──────────────────┼──────────────────┐
-        ╎                  ╎                  ╎
-┌───────────────┐  ┌───────────────┐  ┌───────────────┐
-│ MedicineDAO   │  │ SupplierDAO   │  │ UserDAO       │
+        ┌──────────────────┴──────────────────┐
+        ╎                                     ╎
+┌───────────────┐                     ┌───────────────┐
+│ MedicineDAO   │  │ UserDAO       │
 ├───────────────┤  ├───────────────┤  ├───────────────┤
-│ + search()    │  │ + search()    │  │ + findBy      │
-│ + findLow     │  └───────────────┘  │   Username()  │
-│   Stock()     │                     │ + update      │
-│ + deductStock │  ┌───────────────┐  │   Password()  │
-│   (Connection,│  │ SaleDAO       │  └───────────────┘
-│    int, int)  │  ├───────────────┤
-└───────────────┘  │ + insertSale()│   ┌──────────────────┐
+│ + search()    │                     │ + findBy      │
+│ + deductStock │                     │   Username()  │
+│   (Connection,│                     │ + update      │
+│    int, int)  │                     │   Password()  │
+└───────────────┘                     └───────────────┘
+
+                   ┌───────────────┐
+                   │ SaleDAO       │   ┌──────────────────┐
                    │ + findByDate  │   │ DBConnection     │
                    │   Range()     │   ├──────────────────┤
                    │ + getDaily    │   │ + getConnection()│
@@ -96,13 +98,13 @@ requirement. Do not leave it out.
 
 ```
 ┌────────────────────────────────┐  ┌────────────────────────────────┐
-│ «utility» SalesCalculator      │  │ «utility» InventoryService     │
-├────────────────────────────────┤  ├────────────────────────────────┤
-│ + calculateSubtotal(List)      │  │ + needsReorder(Medicine)       │
-│ + applyDiscount(BigDecimal,..) │  │ + suggestReorderQuantity(..)   │
-│ + calculateTax(BigDecimal)     │  │ + isExpiringSoon(Medicine,int) │
-│ + calculateChange(..)          │  │ + countLowStock(List)          │
-│ + calculateAverageSale(List)   │  └────────────────────────────────┘
+│ «utility» SalesCalculator      │
+├────────────────────────────────┤
+│ + calculateSubtotal(List)      │
+│ + applyDiscount(BigDecimal,..) │
+│ + calculateTax(BigDecimal)     │
+│ + calculateChange(..)          │
+│ + calculateAverageSale(List)   │
 └────────────────────────────────┘
 ```
 
@@ -115,11 +117,11 @@ requirement. Do not leave it out.
                          △
                          │ (hollow triangle = inheritance)
    ┌──────────┬──────────┼──────────┬──────────┬──────────┐
-LoginServlet  Logout  Medicine   Supplier    Sale      Search/Report
+LoginServlet  Logout  Medicine    Sale      Search/Report
    │                      │
    │ uses                 │ uses
    ▼                      ▼
- UserDAO              MedicineDAO, SupplierDAO
+ UserDAO              MedicineDAO
 
            ┌──────────────────────────────┐
            │      «interface» Filter      │

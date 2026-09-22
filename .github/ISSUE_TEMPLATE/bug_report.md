@@ -27,7 +27,6 @@ Paste the full error from the NetBeans Output window here.
 
 - [ ] Login / session
 - [ ] Medicine CRUD
-- [ ] Supplier CRUD
 - [ ] Point of sale
 - [ ] Search
 - [ ] Reports

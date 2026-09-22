@@ -7,13 +7,13 @@
 <!-- Tick one -->
 
 - [ ] Database & DAO (Ramzi)
-- [ ] CRUD & Interface (Amir)
+- [ ] CRUD, Interface & Point of Sale (Amir)
 - [ ] Auth & Security (Aliff)
-- [ ] Search, Logic & Reports (Yasierul)
+- [ ] Logic, Reports & Docs (Yasierul)
 
 ## TODOs completed
 
-<!-- e.g. SupplierDAO TODO 1, 2, 3 -->
+<!-- e.g. SaleServlet TODO 1, 2, 3 -->
 
 ## Rubric item this advances
 

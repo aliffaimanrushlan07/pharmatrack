@@ -4,7 +4,7 @@
     STATUS: COMPLETE
 
     >>> WORKED EXAMPLE FOR EVERY OTHER LIST PAGE IN THE PROJECT. <<<
-    supplier/list.jsp and sale/list.jsp are stubs that follow this exact shape.
+    The sale and search pages are stubs that follow this exact shape.
 
     Three things to notice, all of them deliberate:
 
@@ -76,7 +76,6 @@
                         <th class="num">Stock</th>
                         <th>Status</th>
                         <th>Expiry</th>
-                        <th>Supplier</th>
                         <th style="width:150px">Actions</th>
                     </tr>
                 </thead>
@@ -109,7 +108,6 @@
                                 <fmt:formatDate value="${m.expiryDate}" pattern="dd MMM yyyy"/>
                             </c:if>
                         </td>
-                        <td><c:out value="${m.supplierName}"/></td>
                         <td>
                             <a href="${pageContext.request.contextPath}/medicine?action=edit&id=${m.medicineId}"
                                class="btn btn-sm btn-secondary">Edit</a>

@@ -1,7 +1,7 @@
 <%--
     Dashboard - the landing page after login.
-    OWNER: AMIR (Interface Design), with figures from Yasierul's service layer.
-    STATUS: PARTIAL - the low-stock count is live; the other tiles are TODOs.
+    OWNER: AMIR (Interface Design and Sale module).
+    STATUS: PARTIAL - the medicine count is live; the sales tiles are TODOs.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="my.edu.uptm.pharmatrack.dao.MedicineDAO" %>
@@ -26,20 +26,14 @@
 --%>
 <%
     int totalMedicines = 0;
-    int lowStockCount  = 0;
     String dashError   = null;
     try {
         MedicineDAO dao = new MedicineDAO();
-        List<Medicine> all = dao.findAll();
-        totalMedicines = all.size();
-        for (Medicine m : all) {
-            if (m.isLowStock()) { lowStockCount++; }
-        }
+        totalMedicines = dao.findAll().size();
     } catch (Exception ex) {
         dashError = ex.getMessage();
     }
     request.setAttribute("totalMedicines", totalMedicines);
-    request.setAttribute("lowStockCount",  lowStockCount);
     request.setAttribute("dashError",      dashError);
 %>
 
@@ -62,10 +56,6 @@
         <div class="label">Medicines</div>
         <div class="value">${totalMedicines}</div>
     </div>
-    <div class="stat ${lowStockCount > 0 ? 'alert' : ''}">
-        <div class="label">Low stock</div>
-        <div class="value">${lowStockCount}</div>
-    </div>
     <div class="stat">
         <div class="label">Sales today</div>
         <div class="value">&mdash;</div>
@@ -78,9 +68,9 @@
 
 <div class="todo-banner">
     <strong>Dashboard is partially built</strong>
-    The two right-hand tiles need <em>Yasierul</em>'s <code>SaleDAO.getDailySummary()</code>
-    (TODO 5), and the whole page should move behind a <code>DashboardServlet</code>
-    (<em>Amir</em>). Delete this banner once both are done.
+    The two sales tiles need <em>Yasierul</em>'s <code>SaleDAO.getDailySummary()</code>
+    (TODO 5), and the whole page should move behind a <code>DashboardServlet</code>.
+    Delete this banner once both are done.
 </div>
 
 <div class="card">
@@ -89,7 +79,7 @@
         <a href="${pageContext.request.contextPath}/medicine?action=new" class="btn">Add medicine</a>
         <a href="${pageContext.request.contextPath}/sale" class="btn btn-secondary">New sale</a>
         <a href="${pageContext.request.contextPath}/search" class="btn btn-secondary">Search records</a>
-        <a href="${pageContext.request.contextPath}/report?type=lowstock" class="btn btn-secondary">Low-stock report</a>
+        <a href="${pageContext.request.contextPath}/report" class="btn btn-secondary">Sales report</a>
     </div>
 </div>
 

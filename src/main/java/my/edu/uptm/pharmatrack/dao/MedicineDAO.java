@@ -17,10 +17,13 @@ import java.util.List;
  * <p>MODULE OWNER: <b>RAMZI</b> — written jointly with <b>AMIR</b>, whose
  * CRUD screens drive it.</p>
  *
+ * <p>Note there is no join: suppliers were removed from the system scope, so a
+ * medicine row is self-contained.</p>
+ *
  * <p><b>&gt;&gt;&gt; THIS FILE IS THE WORKED EXAMPLE FOR THE WHOLE TEAM. &lt;&lt;&lt;</b></p>
  *
  * <p>It is complete and working. Every other DAO in this project
- * ({@code SupplierDAO}, {@code SaleDAO}) is a stub that follows exactly this
+ * ({@code SaleDAO}) is a stub that follows exactly this
  * shape. When you write yours, keep this file open beside it and copy the
  * structure — same try-with-resources, same {@code mapRow} helper, same use
  * of {@code PreparedStatement}.</p>
@@ -48,44 +51,29 @@ public class MedicineDAO implements GenericDAO<Medicine> {
     // ------------------------------------------------------------------
 
     private static final String SQL_FIND_ALL =
-        "SELECT m.*, s.name AS supplier_name "
-      + "FROM medicines m "
-      + "LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id "
-      + "ORDER BY m.medicine_id DESC";
+        "SELECT m.* FROM medicines m ORDER BY m.medicine_id DESC";
 
     private static final String SQL_FIND_BY_ID =
-        "SELECT m.*, s.name AS supplier_name "
-      + "FROM medicines m "
-      + "LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id "
-      + "WHERE m.medicine_id = ?";
+        "SELECT m.* FROM medicines m WHERE m.medicine_id = ?";
 
     private static final String SQL_INSERT =
         "INSERT INTO medicines "
-      + "(name, category, price, quantity_in_stock, reorder_level, expiry_date, supplier_id) "
-      + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+      + "(name, category, price, quantity_in_stock, reorder_level, expiry_date) "
+      + "VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_UPDATE =
         "UPDATE medicines SET "
       + "name = ?, category = ?, price = ?, quantity_in_stock = ?, "
-      + "reorder_level = ?, expiry_date = ?, supplier_id = ? "
+      + "reorder_level = ?, expiry_date = ? "
       + "WHERE medicine_id = ?";
 
     private static final String SQL_DELETE =
         "DELETE FROM medicines WHERE medicine_id = ?";
 
     private static final String SQL_SEARCH =
-        "SELECT m.*, s.name AS supplier_name "
-      + "FROM medicines m "
-      + "LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id "
+        "SELECT m.* FROM medicines m "
       + "WHERE m.name LIKE ? OR m.category LIKE ? "
       + "ORDER BY m.name";
-
-    private static final String SQL_FIND_LOW_STOCK =
-        "SELECT m.*, s.name AS supplier_name "
-      + "FROM medicines m "
-      + "LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id "
-      + "WHERE m.quantity_in_stock <= m.reorder_level "
-      + "ORDER BY (m.reorder_level - m.quantity_in_stock) DESC";
 
     private static final String SQL_DEDUCT_STOCK =
         "UPDATE medicines SET quantity_in_stock = quantity_in_stock - ? "
@@ -191,26 +179,6 @@ public class MedicineDAO implements GenericDAO<Medicine> {
         return list;
     }
 
-    /**
-     * Everything at or below its reorder level — feeds the low-stock report.
-     *
-     * @return medicines needing reorder, worst shortfall first.
-     * @throws SQLException if the query fails.
-     */
-    public List<Medicine> findLowStock() throws SQLException {
-        List<Medicine> list = new ArrayList<>();
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SQL_FIND_LOW_STOCK);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                list.add(mapRow(rs));
-            }
-        }
-        return list;
-    }
-
 
     // ==================================================================
     //  UPDATE
@@ -223,7 +191,7 @@ public class MedicineDAO implements GenericDAO<Medicine> {
              PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
 
             bindMedicineFields(ps, m);
-            ps.setInt(8, m.getMedicineId());   // the WHERE clause parameter
+            ps.setInt(7, m.getMedicineId());   // the WHERE clause parameter
 
             return ps.executeUpdate() == 1;
         }
@@ -295,13 +263,11 @@ public class MedicineDAO implements GenericDAO<Medicine> {
         m.setQuantityInStock(rs.getInt("quantity_in_stock"));
         m.setReorderLevel(rs.getInt("reorder_level"));
         m.setExpiryDate(rs.getDate("expiry_date"));
-        m.setSupplierId(rs.getInt("supplier_id"));
-        m.setSupplierName(rs.getString("supplier_name"));
         return m;
     }
 
     /**
-     * Binds parameters 1–7, which are identical in the INSERT and UPDATE
+     * Binds parameters 1–6, which are identical in the INSERT and UPDATE
      * statements. Keeping them together means a new column only has to be
      * added in one place.
      */
@@ -319,11 +285,5 @@ public class MedicineDAO implements GenericDAO<Medicine> {
             ps.setNull(6, Types.DATE);
         }
 
-        // supplier_id 0 means "none selected" in the form, which is NULL in SQL.
-        if (m.getSupplierId() > 0) {
-            ps.setInt(7, m.getSupplierId());
-        } else {
-            ps.setNull(7, Types.INTEGER);
-        }
     }
 }

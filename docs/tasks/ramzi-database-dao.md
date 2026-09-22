@@ -11,7 +11,7 @@
 
 | File | Status | Note |
 |------|--------|------|
-| `database/01_schema.sql` | ✅ Written | 5 tables, FKs, constraints, low-stock view |
+| `database/01_schema.sql` | ✅ Written | 4 tables, FKs, constraints |
 | `database/02_seed_data.sql` | ✅ Written | Sample data + 2 hashed accounts |
 | `database/03_sample_queries.sql` | ✅ Written | Every query the DAOs run |
 | `database/README.md` | ✅ Written | Workbench setup guide |
@@ -32,8 +32,8 @@ machine.
 - [ ] Run `01_schema.sql` in MySQL Workbench on a **fresh** database. It drops
       and recreates, so this is safe to repeat.
 - [ ] Run `02_seed_data.sql`. Check the confirmation output: 2 users,
-      4 suppliers, 13 medicines, 2 sales, 6 sale items.
-- [ ] Run `SELECT * FROM v_low_stock;` — you should get exactly 3 rows.
+      13 medicines, 2 sales, 6 sale items.
+- [ ] Run `SELECT * FROM medicines WHERE quantity_in_stock <= reorder_level;` — expect 3 rows.
 - [ ] Open `03_sample_queries.sql` and run every query in it. All of them
       should return results without error.
 - [ ] Tell the group in the chat that the database is verified. **This unblocks
@@ -93,7 +93,6 @@ Starting point with all tables, columns and relationships already listed:
 The five relationships to show:
 
 ```
-suppliers  1 ──────< M  medicines      (one supplier, many medicines)
 users      1 ──────< M  sales          (one cashier, many sales)
 sales      1 ──────< M  sale_items     (one receipt, many lines)
 medicines  1 ──────< M  sale_items     (one medicine, many lines)
@@ -115,7 +114,7 @@ model classes:
 - [ ] Show the four layers as separate groupings: **model**, **dao**,
       **service**, **controller**.
 - [ ] Show `GenericDAO<T>` as an **interface**, with a dashed arrow
-      (realisation) from `MedicineDAO`, `SupplierDAO` and `UserDAO`.
+      (realisation) from `MedicineDAO` and `UserDAO`.
       *This is the visible evidence for the brief's "implementing classes and
       interfaces" requirement — do not leave it out.*
 - [ ] Show composition between `Sale` and `SaleItem` (filled diamond — sale
@@ -150,7 +149,7 @@ These lift the *Database Integration* criterion from Good to Excellent:
 
 150–250 words, in your own voice. Things worth writing about:
 
-- Why you chose five tables rather than the two the brief required as a minimum
-- The reasoning behind `ON DELETE SET NULL` for suppliers but `ON DELETE RESTRICT` for sale items
+- Why you chose four tables rather than the two the brief required as a minimum
+- The reasoning behind `ON DELETE CASCADE` for sale items but `ON DELETE RESTRICT` for medicines
 - Storing `unit_price` on `sale_items` rather than joining to the current price
 - Anything that genuinely surprised you — those are the sentences that read as real

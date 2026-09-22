@@ -28,7 +28,7 @@ If you installed MySQL Workbench but no server, the connection will fail with
 4. Repeat steps 2–3 for **`database/02_seed_data.sql`**.
 
 5. In the **SCHEMAS** panel on the left, click the refresh icon. A
-   `pharmatrack` schema should appear with 5 tables and 1 view.
+   `pharmatrack` schema should appear with 4 tables.
 
 6. Open `src/main/resources/db.properties` in NetBeans and change
    `db.password` to **your own MySQL root password**. Leave everything else.
@@ -51,20 +51,21 @@ that prints a hash for you to paste in.
 ## The tables
 
 ```
-suppliers ──1:M──> medicines ──1:M──> sale_items <──M:1── sales ──M:1──> users
+medicines ──1:M──> sale_items <──M:1── sales ──M:1──> users
 ```
 
-| Table        | What it holds                             | Rows after seeding |
-|--------------|-------------------------------------------|--------------------|
-| `users`      | Login accounts + BCrypt hash + role       | 2                  |
-| `suppliers`  | Medicine suppliers                        | 4                  |
-| `medicines`  | The inventory                             | 13                 |
-| `sales`      | Receipt header (one per transaction)      | 2                  |
-| `sale_items` | Receipt lines — junction table            | 6                  |
-| `v_low_stock`| **View** of everything below reorder level| —                  |
+| Table        | What it holds                        | Rows after seeding |
+|--------------|--------------------------------------|--------------------|
+| `users`      | Login accounts + BCrypt hash + role  | 2                  |
+| `medicines`  | The inventory                        | 13                 |
+| `sales`      | Receipt header (one per transaction) | 2                  |
+| `sale_items` | Receipt lines — junction table       | 6                  |
 
-Three medicines are seeded **below their reorder level** on purpose so the
-low-stock report has something to show during the demo.
+`sale_items` is a junction table resolving the many-to-many between sales and
+medicines — that is what lets one receipt hold several different medicines.
+
+Three medicines are seeded **below their `reorder_level`** so the Low/OK badge
+on the medicine list has something to show during the demo.
 
 ---
 

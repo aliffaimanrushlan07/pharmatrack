@@ -2,6 +2,9 @@
 
 ---
 
+> **Scope note:** supplier management and the low-stock report are out of
+> scope. Do not include them.
+
 ## Actors
 
 | Actor | Who | Can do |
@@ -25,13 +28,11 @@ separates a thought-through diagram from a list of bubbles.
 - View Medicine List
 - Process Sale
 - View Receipt
-- View Low-Stock Report
 
 ### Admin only
 - Add Medicine
 - Update Medicine
 - Delete Medicine
-- Manage Suppliers
 - View Sales Report
 
 ---
@@ -48,12 +49,10 @@ separates a thought-through diagram from a list of bubbles.
       △         │      ( View Medicine List )                 │
       │         │      ( Process Sale ) ·····<<include>>····> ( Update Stock )
       │         │      ( View Receipt )                       │
-      │         │      ( View Low-Stock Report )              │
       │         │                                             │
       │         │      ( Add Medicine )                       │
     Admin ──────┼──────( Update Medicine )                    │
                 │      ( Delete Medicine )                    │
-                │      ( Manage Suppliers )                   │
                 │      ( View Sales Report )                  │
                 │                                             │
                 └─────────────────────────────────────────────┘

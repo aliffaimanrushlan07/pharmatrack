@@ -1,8 +1,16 @@
-# Yasierul — Search, Business Logic & Documentation
+# Yasierul — Business Logic, Reports & Documentation
 
-> You have the largest workload, so the order below matters. **Do the search
-> page first** — it is a whole 10-mark criterion and takes about an hour,
-> because the DAO method it needs is already written.
+> **Scope changed:** the point-of-sale screen moved to Amir, and the low-stock
+> report and `InventoryService` were removed from the system. You keep the
+> engine room — `SaleDAO`, `SalesCalculator`, search and reports — plus the
+> documentation.
+>
+> **Do the search page first** — it is a whole 10-mark criterion and takes
+> about an hour, because the DAO method it needs is already written.
+>
+> **Amir depends on you.** His point-of-sale screen calls your
+> `SaleDAO.insertSale()` and `SalesCalculator`. Agree the method signatures
+> with him on day one so you can both work in parallel.
 >
 > Two rubric criteria are yours outright: **Search & Calculation Features (10)**
 > and, through the user manual, **User Manual (10)** in the documentation rubric.
@@ -16,13 +24,8 @@
 | `controller/SearchServlet.java` | 🔴 **STUB** | TODO 1–4 · **do this first** |
 | `webapp/search.jsp` | 🔴 **STUB** | Results table |
 | `dao/SaleDAO.java` | 🔴 **STUB** | TODO 1–5 · includes the transaction |
-| `controller/SaleServlet.java` | 🔴 **STUB** | TODO 1–5 |
-| `webapp/sale/pos.jsp` | 🔴 **STUB** | Point-of-sale screen |
-| `webapp/sale/receipt.jsp` | 🔴 **STUB** | Receipt |
 | `service/SalesCalculator.java` | 🟡 Partial | TODO 1–4 |
-| `service/InventoryService.java` | 🔴 **STUB** | TODO 1–4 |
 | `controller/ReportServlet.java` | 🟡 Partial | TODO 1–3 |
-| `webapp/report/low-stock.jsp` | ✅ Done | Your worked example |
 | `webapp/report/sales.jsp` | 🔴 **STUB** | Sales summary |
 | `docs/USER-MANUAL.md` | 🔴 **STUB** | Report section 11 |
 
@@ -107,68 +110,32 @@ untouched. Examiners like seeing a rollback actually work.
 
 ---
 
-## Task 4 — Point of sale (3–4 hours)
+## Task 4 — Support Amir's point-of-sale screen (ongoing)
 
-**Files:** `controller/SaleServlet.java`, `webapp/sale/pos.jsp`, `webapp/sale/receipt.jsp`
+Amir owns `SaleServlet`, `pos.jsp` and `receipt.jsp`. He calls into your code:
 
-The most interactive screen in the system and the best one to lead the live demo
-with.
+| He calls | You provide | Your TODO |
+|---|---|---|
+| `saleDAO.insertSale(sale)` | the transaction | TODO 3 |
+| `SalesCalculator.calculateSubtotal(items)` | running total | done |
+| `saleDAO.findById(id)` | receipt data | TODO 2 |
 
-**Design decision, made for you and worth explaining in the report:** the basket
-lives in the **HTTP session** as a `Sale` object until the cashier presses
-*Complete sale*. Nothing touches the database until the sale is final, so an
-abandoned basket leaves no orphan rows and no wrongly-deducted stock.
+Agree these signatures **before either of you starts**, then work in parallel.
+Do not let him block on you or you on him.
 
-- [ ] **TODO 1** — `?action=add` · get the `Sale` from the session (create if absent),
-      add a `SaleItem`, put it back
-- [ ] **TODO 2** — `?action=remove` and `?action=clear`
-- [ ] **TODO 3** — running total via `SalesCalculator.calculateSubtotal()`
-- [ ] **TODO 4** — `?action=complete` · calls `saleDAO.insertSale()`
-- [ ] **TODO 5** — receipt page after a successful sale
+## Task 5 — Reports (1–2 hours)
 
-Layout that works:
+**Files:** `controller/ReportServlet.java`, `webapp/report/sales.jsp`
 
-```
-+-------------------------+-------------------------+
-|  Search / pick medicine |  Basket                 |
-|  name, price, stock     |  lines + subtotals      |
-|  [ qty ]  [ Add ]       |  ---------------------  |
-|                         |  TOTAL     RM 57.90     |
-|                         |  [ Complete sale ]      |
-+-------------------------+-------------------------+
-```
-
-**Validate stock twice** — when adding to the basket *and* at completion.
-Checking only at add time leaves a gap where another cashier sells the last
-packet while this basket is still open. `deductStock` is the final guard; it
-refuses to take stock below zero.
-
----
-
-## Task 5 — `InventoryService` and reports (2 hours)
-
-**Files:** `service/InventoryService.java`, `controller/ReportServlet.java`, `webapp/report/sales.jsp`
-
-`InventoryService`:
-
-- [ ] **TODO 1** — `needsReorder()`
-- [ ] **TODO 2** — `suggestReorderQuantity()` · top up to `reorderLevel × 3`
-- [ ] **TODO 3** — `isExpiringSoon()` · ⚠️ `expiry_date` is nullable; a null date
-      must return `false`, not throw
-- [ ] **TODO 4** — `countLowStock()` · feeds the dashboard badge
-
-`ReportServlet`:
-
-- [ ] **TODO 1** — `?type=sales` using `getDailySummary()`
+- [ ] **TODO 1** — `getDailySummary()` rendered in `sales.jsp`
 - [ ] **TODO 2** — grand total revenue and overall average — this row is the
       single clearest piece of evidence for the calculation criterion
 - [ ] **TODO 3** — expiring-soon report. SQL is ready in
-      `database/03_sample_queries.sql`, section F2
+      `database/03_sample_queries.sql`, section E2
 
-`report/low-stock.jsp` is already finished — use it as the template for
-`report/sales.jsp`.
-
----
+> The low-stock report and reorder calculation were **removed from scope**.
+> The Low/OK badge on the medicine list stays — it is computed in
+> `Medicine.isLowStock()` and needs nothing from you.
 
 ## Task 6 — User Manual ⭐ (3–4 hours)
 
@@ -209,5 +176,5 @@ Do this **after** the features work, so the screenshots are of the real thing.
 
 - The transaction — why it was necessary, and what would have broken without it
 - Why `BigDecimal` and not `double` for money
-- Keeping the basket in the session instead of writing to the database as you go
+- Designing an interface Amir could build against before your code existed
 - Coordinating four people's modules while also compiling the documentation

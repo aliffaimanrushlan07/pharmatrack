@@ -30,18 +30,17 @@ WHERE  username = 'admin' AND is_active = 1;
 --  SECTION B - MEDICINE CRUD  (Amir - pattern already implemented in Java)
 -- ===========================================================================
 
--- B1. RETRIEVE all, newest first, with the supplier name joined in.
-SELECT m.*, s.name AS supplier_name
+-- B1. RETRIEVE all, newest first.
+SELECT m.*
 FROM   medicines m
-LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id
 ORDER BY m.medicine_id DESC;
 
 -- B2. RETRIEVE one (for the edit form).
 SELECT * FROM medicines WHERE medicine_id = 1;
 
 -- B3. CREATE.
-INSERT INTO medicines (name, category, price, quantity_in_stock, reorder_level, expiry_date, supplier_id)
-VALUES ('Test Medicine', 'Test', 9.99, 10, 5, '2028-01-01', 1);
+INSERT INTO medicines (name, category, price, quantity_in_stock, reorder_level, expiry_date)
+VALUES ('Test Medicine', 'Test', 9.99, 10, 5, '2028-01-01');
 
 -- B4. UPDATE.
 UPDATE medicines
@@ -53,33 +52,19 @@ DELETE FROM medicines WHERE name = 'Test Medicine (edited)';
 
 
 -- ===========================================================================
---  SECTION C - SUPPLIER CRUD  (Amir)
+--  SECTION C - SEARCH  (Yasierul)
 -- ===========================================================================
 
--- C1. List all suppliers with how many medicines each one supplies.
-SELECT s.supplier_id, s.name, s.contact_person, s.phone, s.email,
-       COUNT(m.medicine_id) AS medicine_count
-FROM   suppliers s
-LEFT JOIN medicines m ON m.supplier_id = s.supplier_id
-GROUP BY s.supplier_id, s.name, s.contact_person, s.phone, s.email
-ORDER BY s.name;
-
-
--- ===========================================================================
---  SECTION D - SEARCH  (Yasierul)
--- ===========================================================================
-
--- D1. Search medicines by name OR category. In Java the '%keyword%' string
+-- C1. Search medicines by name OR category. In Java the '%keyword%' string
 --     is built in the DAO and bound with setString(1, "%" + keyword + "%").
 --     NEVER concatenate the keyword straight into the SQL string -
 --     that is an SQL injection hole and the rubric penalises it.
-SELECT m.*, s.name AS supplier_name
+SELECT m.*
 FROM   medicines m
-LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id
 WHERE  m.name LIKE '%para%' OR m.category LIKE '%para%'
 ORDER BY m.name;
 
--- D2. Search sales by date range.
+-- C2. Search sales by date range.
 SELECT sa.sale_id, sa.sale_date, u.full_name AS cashier, sa.total_amount
 FROM   sales sa
 JOIN   users u ON u.user_id = sa.user_id
@@ -88,10 +73,10 @@ ORDER BY sa.sale_date DESC;
 
 
 -- ===========================================================================
---  SECTION E - BUSINESS LOGIC / CALCULATION  (Yasierul)
+--  SECTION D - BUSINESS LOGIC / CALCULATION  (Yasierul)
 -- ===========================================================================
 
--- E1. Recalculate one sale's total from its line items.
+-- D1. Recalculate one sale's total from its line items.
 --     This is the calculation the rubric asks for. The Java service does the
 --     same arithmetic in SalesCalculator so the logic lives in the app layer.
 SELECT sale_id, SUM(subtotal) AS calculated_total
@@ -99,17 +84,17 @@ FROM   sale_items
 WHERE  sale_id = 2
 GROUP BY sale_id;
 
--- E2. Push that calculated total back into the sales row.
+-- D2. Push that calculated total back into the sales row.
 UPDATE sales sa
 SET    sa.total_amount = (SELECT SUM(si.subtotal) FROM sale_items si WHERE si.sale_id = sa.sale_id)
 WHERE  sa.sale_id = 2;
 
--- E3. Deduct stock after a sale (runs inside the same transaction as the insert).
+-- D3. Deduct stock after a sale (runs inside the same transaction as the insert).
 UPDATE medicines
 SET    quantity_in_stock = quantity_in_stock - 2
 WHERE  medicine_id = 1 AND quantity_in_stock >= 2;
 
--- E4. Daily sales summary - total revenue and average basket size.
+-- D4. Daily sales summary - total revenue and average basket size.
 SELECT DATE(sale_date)    AS sale_day,
        COUNT(*)           AS transactions,
        SUM(total_amount)  AS revenue,
@@ -118,7 +103,7 @@ FROM   sales
 GROUP BY DATE(sale_date)
 ORDER BY sale_day DESC;
 
--- E5. Best-selling medicines.
+-- D5. Best-selling medicines.
 SELECT m.name,
        SUM(si.quantity) AS units_sold,
        SUM(si.subtotal) AS revenue
@@ -130,13 +115,10 @@ LIMIT 10;
 
 
 -- ===========================================================================
---  SECTION F - LOW STOCK / EXPIRY REPORTS  (Yasierul)
+--  SECTION E - EXPIRY REPORT  (Yasierul)
 -- ===========================================================================
 
--- F1. Everything at or below its reorder level (uses the view from 01_schema).
-SELECT * FROM v_low_stock ORDER BY shortfall DESC;
-
--- F2. Medicines expiring within the next 90 days.
+-- E2. Medicines expiring within the next 90 days.
 SELECT medicine_id, name, expiry_date,
        DATEDIFF(expiry_date, CURDATE()) AS days_remaining
 FROM   medicines

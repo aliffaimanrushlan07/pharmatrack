@@ -56,7 +56,7 @@ public final class ValidationUtil {
     }
 
     /**
-     * TODO 1 (AMIR) — basic email format check for the supplier form.
+     * TODO 1 (AMIR) — basic email format check for form input.
      *
      * <p>A simple regex is enough here. Do not try to write a fully
      * RFC-compliant email regex; it is famously several hundred characters
@@ -72,7 +72,7 @@ public final class ValidationUtil {
     }
 
     /**
-     * TODO 2 (AMIR) — Malaysian phone number check for the supplier form.
+     * TODO 2 (AMIR) — Malaysian phone number check for form input.
      *
      * <p>Accept the formats actually used: {@code 03-3342 2222},
      * {@code 0333422222}, {@code +603 3342 2222}. Strip spaces and dashes

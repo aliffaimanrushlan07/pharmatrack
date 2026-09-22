@@ -7,8 +7,8 @@ Everyone reads this once, on day one. About 20 minutes including setup.
 ## 1. What we are building
 
 A **Pharmacy Inventory and Sales Management System** — a Java EE web app where
-pharmacy staff log in, manage medicine and supplier records, ring up sales, and
-see which stock needs reordering.
+pharmacy staff log in, manage medicine records, ring up sales, and search their
+inventory and sales history.
 
 The assignment is worth **40% of the course**, split into two 20% halves:
 
@@ -26,9 +26,9 @@ just screenshots and explanations of what is in here.
 | You are       | You own                                  | Read this next                                    |
 |---------------|------------------------------------------|---------------------------------------------------|
 | **Ramzi**     | Database & DAO layer                     | [`tasks/ramzi-database-dao.md`](tasks/ramzi-database-dao.md) |
-| **Amir**      | CRUD screens & interface                 | [`tasks/amir-crud-ui.md`](tasks/amir-crud-ui.md)   |
+| **Amir**      | CRUD screens, interface & point of sale  | [`tasks/amir-crud-sale.md`](tasks/amir-crud-sale.md)   |
 | **Aliff**     | Login, security & architecture           | [`tasks/aliff-auth-security.md`](tasks/aliff-auth-security.md) |
-| **Yasierul**  | Search, calculations, reports & docs     | [`tasks/yasierul-search-reporting.md`](tasks/yasierul-search-reporting.md) |
+| **Yasierul**  | Calculations, search, reports & docs     | [`tasks/yasierul-logic-reporting.md`](tasks/yasierul-logic-reporting.md) |
 
 Your brief tells you exactly which files are yours, in what order to do them,
 and what "done" looks like for each.
@@ -82,12 +82,12 @@ them. In NetBeans, **Window → Action Items** lists every TODO in the project.
 ```bash
 git checkout main
 git pull                                   # always start from the latest
-git checkout -b feat/supplier-crud         # your own branch
+git checkout -b feat/point-of-sale         # your own branch
 
 # ... work, then ...
 git add .
-git commit -m "feat(supplier): implement SupplierDAO.findAll and mapRow"
-git push -u origin feat/supplier-crud      # then open a Pull Request on GitHub
+git commit -m "feat(sale): add basket handling to SaleServlet"
+git push -u origin feat/point-of-sale      # then open a Pull Request on GitHub
 ```
 
 Three rules:
@@ -100,6 +100,18 @@ Three rules:
    hours — both for reviewing and for proving you did the work.
 
 Full conventions: [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
+
+---
+
+## 5a. Scope change — read this
+
+Supplier management and the automatic low-stock report were **removed from the
+system** by group decision. If you see them mentioned in an old draft of the
+report, that draft is out of date. What remains:
+
+- 4 tables: `users`, `medicines`, `sales`, `sale_items`
+- The Low/OK badge on the medicine list stays (it needs no separate screen)
+- Amir owns the point-of-sale screen in place of supplier CRUD
 
 ---
 
@@ -127,7 +139,7 @@ Deadline is **8 October 2026, 5:00 pm**.
 | By          | Everyone should have…                                                |
 |-------------|----------------------------------------------------------------------|
 | **Week 1**  | The app running locally. First commit pushed. Own brief read.        |
-| **Week 2**  | Core module working — Amir: supplier CRUD. Yasierul: search page. Aliff: RoleFilter. Ramzi: DAOs reviewed + ERD drawn. |
+| **Week 2**  | Core module working — Amir: point of sale. Yasierul: search page + SaleDAO. Aliff: RoleFilter. Ramzi: ERD + class diagram drawn. |
 | **Week 3**  | All 8 rubric items green. Diagrams finished. Screenshots taken.      |
 | **Week 4**  | Report assembled, user manual written, reflections in, demo rehearsed. |
 | **Buffer**  | Leave the last 3 days clear. Something always breaks.                |

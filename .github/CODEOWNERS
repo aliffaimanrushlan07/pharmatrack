@@ -24,12 +24,11 @@
 /src/main/java/my/edu/uptm/pharmatrack/dao/MedicineDAO.java   @ramzi-github-username @amir-github-username
 
 # --- AMIR: CRUD & Interface Module ------------------------------------------
-/src/main/java/my/edu/uptm/pharmatrack/dao/SupplierDAO.java        @amir-github-username
 /src/main/java/my/edu/uptm/pharmatrack/controller/MedicineServlet.java  @amir-github-username
-/src/main/java/my/edu/uptm/pharmatrack/controller/SupplierServlet.java  @amir-github-username
+/src/main/java/my/edu/uptm/pharmatrack/controller/SaleServlet.java       @amir-github-username
 /src/main/java/my/edu/uptm/pharmatrack/util/                       @amir-github-username
 /src/main/webapp/medicine/          @amir-github-username
-/src/main/webapp/supplier/          @amir-github-username
+/src/main/webapp/sale/              @amir-github-username
 /src/main/webapp/includes/          @amir-github-username
 /src/main/webapp/css/               @amir-github-username
 /src/main/webapp/dashboard.jsp      @amir-github-username
@@ -49,10 +48,8 @@
 # --- YASIERUL: Search, Business Logic & Documentation -----------------------
 /src/main/java/my/edu/uptm/pharmatrack/dao/SaleDAO.java     @yasierul-github-username
 /src/main/java/my/edu/uptm/pharmatrack/service/             @yasierul-github-username
-/src/main/java/my/edu/uptm/pharmatrack/controller/SaleServlet.java      @yasierul-github-username
 /src/main/java/my/edu/uptm/pharmatrack/controller/SearchServlet.java    @yasierul-github-username
 /src/main/java/my/edu/uptm/pharmatrack/controller/ReportServlet.java    @yasierul-github-username
-/src/main/webapp/sale/              @yasierul-github-username
 /src/main/webapp/report/            @yasierul-github-username
 /src/main/webapp/search.jsp         @yasierul-github-username
 /docs/USER-MANUAL.md                @yasierul-github-username

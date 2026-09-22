@@ -11,7 +11,7 @@ import java.util.List;
  * Business logic for sales arithmetic — totals, tax, discounts, change.
  *
  * <p>=====================================================================<br>
- * MODULE OWNER: <b>YASIERUL</b> — Search, Business Logic &amp; Documentation<br>
+ * MODULE OWNER: <b>YASIERUL</b> — Business Logic, Reports &amp; Documentation<br>
  * STATUS: <b>PARTIAL</b> — the core total is done as a worked example; the
  * rest are TODOs.<br>
  * =====================================================================</p>

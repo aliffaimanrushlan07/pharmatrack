@@ -57,6 +57,9 @@ Target users and system features. Update the draft to describe **what was
 actually built**, not what was planned in week one.
 
 ### 6. Diagrams (20, split) ⭐
+
+> Suppliers and the low-stock report are **out of scope** — do not diagram them.
+
 The largest single item. Starting points for all five, already matching the
 code: [`diagrams/`](diagrams/). Draw from the **code**, not from the draft report
 — several column names changed during implementation.

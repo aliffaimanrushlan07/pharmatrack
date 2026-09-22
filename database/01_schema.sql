@@ -12,8 +12,8 @@
 --    5. Refresh the SCHEMAS panel on the left - you should see 'pharmatrack'.
 -- ===========================================================================
 --  RUBRIC NOTE: "Relational Tables - use at least two relational tables".
---  We use FIVE tables with proper PK/FK relationships, which targets the
---  "Excellent (90-100): well-designed database relationships" band.
+--  We use FOUR tables with proper PK/FK relationships, including a junction
+--  table (sale_items) resolving the many-to-many between sales and medicines.
 -- ===========================================================================
 
 DROP DATABASE IF EXISTS pharmatrack;
@@ -45,23 +45,7 @@ CREATE TABLE users (
 
 
 -- ---------------------------------------------------------------------------
---  TABLE 2: suppliers
---  Companies that supply medicines. One supplier supplies many medicines.
--- ---------------------------------------------------------------------------
-CREATE TABLE suppliers (
-    supplier_id   INT          NOT NULL AUTO_INCREMENT,
-    name          VARCHAR(100) NOT NULL,
-    contact_person VARCHAR(100)         DEFAULT NULL,
-    phone         VARCHAR(30)           DEFAULT NULL,
-    email         VARCHAR(100)          DEFAULT NULL,
-    address       VARCHAR(255)          DEFAULT NULL,
-
-    CONSTRAINT pk_suppliers PRIMARY KEY (supplier_id)
-) ENGINE=InnoDB;
-
-
--- ---------------------------------------------------------------------------
---  TABLE 3: medicines
+--  TABLE 2: medicines
 --  The inventory itself. quantity_in_stock drives the low-stock alert;
 --  reorder_level is the threshold each medicine is compared against.
 -- ---------------------------------------------------------------------------
@@ -71,15 +55,10 @@ CREATE TABLE medicines (
     category          VARCHAR(50)            DEFAULT NULL,
     price             DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     quantity_in_stock INT           NOT NULL DEFAULT 0,
-    reorder_level     INT           NOT NULL DEFAULT 10,
+    reorder_level     INT           NOT NULL DEFAULT 10,   -- drives the Low/OK badge
     expiry_date       DATE                   DEFAULT NULL,
-    supplier_id       INT                    DEFAULT NULL,
 
     CONSTRAINT pk_medicines PRIMARY KEY (medicine_id),
-    CONSTRAINT fk_medicines_supplier
-        FOREIGN KEY (supplier_id) REFERENCES suppliers (supplier_id)
-        ON DELETE SET NULL
-        ON UPDATE CASCADE,
     CONSTRAINT chk_medicines_price CHECK (price >= 0),
     CONSTRAINT chk_medicines_qty   CHECK (quantity_in_stock >= 0)
 ) ENGINE=InnoDB;
@@ -89,7 +68,7 @@ CREATE INDEX idx_medicines_name ON medicines (name);
 
 
 -- ---------------------------------------------------------------------------
---  TABLE 4: sales
+--  TABLE 3: sales
 --  One row per completed transaction (the "receipt header").
 --  total_amount is CALCULATED by the application from the sale_items rows -
 --  this is the "business logic / calculation feature" the rubric asks for.
@@ -111,7 +90,7 @@ CREATE INDEX idx_sales_date ON sales (sale_date);
 
 
 -- ---------------------------------------------------------------------------
---  TABLE 5: sale_items
+--  TABLE 4: sale_items
 --  Junction table resolving the many-to-many between sales and medicines.
 --  unit_price is copied in at the time of sale on purpose: if the medicine
 --  price changes next month, an old receipt must still show the old price.
@@ -136,24 +115,6 @@ CREATE TABLE sale_items (
         ON UPDATE CASCADE,
     CONSTRAINT chk_sale_items_qty CHECK (quantity > 0)
 ) ENGINE=InnoDB;
-
-
--- ---------------------------------------------------------------------------
---  VIEW: v_low_stock
---  Convenience view for the Low-Stock Report page (Yasierul's module).
---  Using a view here demonstrates database-side logic in the report.
--- ---------------------------------------------------------------------------
-CREATE OR REPLACE VIEW v_low_stock AS
-SELECT  m.medicine_id,
-        m.name,
-        m.category,
-        m.quantity_in_stock,
-        m.reorder_level,
-        (m.reorder_level - m.quantity_in_stock) AS shortfall,
-        s.name AS supplier_name
-FROM    medicines m
-LEFT JOIN suppliers s ON s.supplier_id = m.supplier_id
-WHERE   m.quantity_in_stock <= m.reorder_level;
 
 
 -- ---------------------------------------------------------------------------

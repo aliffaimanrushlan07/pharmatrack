@@ -63,7 +63,7 @@ if (user != null && user.isAdmin()) {
   — they are just not permitted, and a login prompt would be confusing.
 
 - [ ] **TODO 2** — widen `urlPatterns` to cover the admin-only URLs.
-      **Tell Amir first** — he owns the supplier screens and needs to know they
+      **Tell Amir first** — he owns the medicine screens and needs to know they
       are about to become admin-only.
 
 **Demo this in the presentation.** Log in as `cashier`, then type the admin URL

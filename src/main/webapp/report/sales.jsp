@@ -12,15 +12,12 @@
 
 <div class="page-header">
     <div><h1>Sales summary</h1><p>Daily revenue, transaction count and average sale.</p></div>
-    <a href="${pageContext.request.contextPath}/report?type=lowstock" class="btn btn-secondary">
-        Low stock report
-    </a>
 </div>
 
 <div class="todo-banner">
     <strong>Assigned to Yasierul &mdash; not built yet</strong>
     Needs <code>SaleDAO.getDailySummary()</code> (TODO 5) and
-    <code>ReportServlet</code> TODO 1-2.
+    <code>ReportServlet</code> TODO 1-2. 
 </div>
 
 <%-- TODO (YASIERUL): loop over ${dailySummary} - each entry is a Map with the

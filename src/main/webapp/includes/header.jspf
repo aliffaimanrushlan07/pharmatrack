@@ -32,13 +32,11 @@
            class="${activeNav eq 'dashboard' ? 'active' : ''}">Dashboard</a>
         <a href="${pageContext.request.contextPath}/medicine"
            class="${activeNav eq 'medicine' ? 'active' : ''}">Medicines</a>
-        <a href="${pageContext.request.contextPath}/supplier"
-           class="${activeNav eq 'supplier' ? 'active' : ''}">Suppliers</a>
         <a href="${pageContext.request.contextPath}/sale"
            class="${activeNav eq 'sale' ? 'active' : ''}">New Sale</a>
         <a href="${pageContext.request.contextPath}/search"
            class="${activeNav eq 'search' ? 'active' : ''}">Search</a>
-        <a href="${pageContext.request.contextPath}/report?type=lowstock"
+        <a href="${pageContext.request.contextPath}/report"
            class="${activeNav eq 'report' ? 'active' : ''}">Reports</a>
 
         <span class="spacer"></span>

@@ -44,7 +44,7 @@ It deliberately does not say which one was wrong, for security reasons.
 
 ## 3. The dashboard
 
-**TODO** — explain each tile and what the low-stock number means.
+**TODO** — explain each tile.
 
 *[Screenshot: dashboard with the four tiles]*
 
@@ -53,7 +53,7 @@ It deliberately does not say which one was wrong, for security reasons.
 ## 4. Managing medicines
 
 ### 4.1 Viewing the list
-*[Screenshot: medicine list]* — explain the columns and the **Low** badge.
+*[Screenshot: medicine list]* — explain the columns and the **Low/OK** badge.
 
 ### 4.2 Adding a medicine
 *[Screenshot: empty add form]*
@@ -74,13 +74,7 @@ to 0 instead.
 
 ---
 
-## 5. Managing suppliers
-
-**TODO** — same structure as section 4.
-
----
-
-## 6. Processing a sale
+## 5. Processing a sale
 
 **TODO** — the most important section for the demo.
 
@@ -99,7 +93,7 @@ there is not enough stock.
 
 ---
 
-## 7. Searching records
+## 6. Searching records
 
 **TODO**
 
@@ -111,18 +105,18 @@ there is not enough stock.
 
 ---
 
-## 8. Reports
+## 7. Reports
 
 **TODO**
 
-- **Low-stock report** — what the shortfall column means and how to act on it
 - **Sales summary** — daily revenue, transaction count, average sale
+- **Expiring soon** — medicines within 90 days of expiry
 
 *[Screenshot: each report]*
 
 ---
 
-## 9. Logging out
+## 8. Logging out
 
 **TODO** — click **Log out** in the top right. Explain that the system also logs
 you out automatically after 30 minutes of inactivity, and why that matters on a
@@ -130,7 +124,7 @@ shared counter terminal.
 
 ---
 
-## 10. Troubleshooting
+## 9. Troubleshooting
 
 **TODO** — a short table of what a non-technical user might hit:
 

@@ -13,6 +13,10 @@ arguments start.
 one named owner, and a change to them is announced in the group chat before it
 is pushed.
 
+> **Scope change (agreed by the group):** supplier management and the automatic
+> low-stock report were removed. Amir took the point-of-sale screen in place of
+> that module; Yasierul keeps `SaleDAO`, `SalesCalculator`, search and reports. `medicines.reorder_level` survives only to drive the Low/OK badge.
+
 ---
 
 ## By file
@@ -31,7 +35,6 @@ is pushed.
 | File | Status |
 |------|--------|
 | `User.java` | ✅ Done |
-| `Supplier.java` | ✅ Done |
 | `Medicine.java` | ✅ Done |
 | `Sale.java` | ✅ Done |
 | `SaleItem.java` | ✅ Done |
@@ -44,7 +47,6 @@ is pushed.
 | `GenericDAO.java` | Ramzi | ✅ Done — the interface |
 | `MedicineDAO.java` | Ramzi + Amir | ✅ Done — **worked example** |
 | `UserDAO.java` | Aliff | ✅ Done |
-| `SupplierDAO.java` | **Amir** | 🔴 Stub — TODO 1–6 |
 | `SaleDAO.java` | **Yasierul** | 🔴 Stub — TODO 1–5 |
 
 ### `security/` — **ALIFF**
@@ -60,7 +62,6 @@ is pushed.
 | File | Status |
 |------|--------|
 | `SalesCalculator.java` | 🟡 Partial — TODO 1–4 |
-| `InventoryService.java` | 🔴 Stub — TODO 1–4 |
 
 ### `controller/`
 
@@ -69,10 +70,9 @@ is pushed.
 | `LoginServlet.java` | Aliff | ✅ Done |
 | `LogoutServlet.java` | Aliff | ✅ Done |
 | `MedicineServlet.java` | Amir | ✅ Done — **worked example** |
-| `SupplierServlet.java` | **Amir** | 🔴 Stub — TODO 1–6 |
-| `SaleServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–5 |
+| `SaleServlet.java` | **Amir** | 🔴 Stub — TODO 1–5 |
 | `SearchServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–4 |
-| `ReportServlet.java` | **Yasierul** | 🟡 Partial — TODO 1–3 |
+| `ReportServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–3 |
 
 ### `util/` — **AMIR**
 
@@ -92,12 +92,9 @@ is pushed.
 | `css/style.css` | Amir | ✅ Done |
 | `medicine/list.jsp` | Amir | ✅ Done — **worked example** |
 | `medicine/form.jsp` | Amir | ✅ Done — **worked example** |
-| `supplier/list.jsp` | **Amir** | 🔴 Stub |
-| `supplier/form.jsp` | **Amir** | 🔴 Stub |
-| `sale/pos.jsp` | **Yasierul** | 🔴 Stub |
-| `sale/receipt.jsp` | **Yasierul** | 🔴 Stub |
+| `sale/pos.jsp` | **Amir** | 🔴 Stub |
+| `sale/receipt.jsp` | **Amir** | 🔴 Stub |
 | `search.jsp` | **Yasierul** | 🔴 Stub |
-| `report/low-stock.jsp` | Yasierul | ✅ Done — **worked example** |
 | `report/sales.jsp` | **Yasierul** | 🔴 Stub |
 | `WEB-INF/web.xml` | Aliff | ✅ Done |
 | `WEB-INF/error/*.jsp` | Aliff | ✅ Done |
@@ -119,8 +116,8 @@ is pushed.
 |-----------|-------|---------------|--------|
 | Database Integration | 10 | Ramzi | ✅ |
 | Java EE Architecture & Design | 10 | Aliff | ✅ |
-| CRUD Functionality | 10 | Amir | 🟡 |
-| Search & Calculation Features | 10 | Yasierul | 🔴 |
+| CRUD Functionality | 10 | Amir | ✅ |
+| Search & Calculation Features | 10 | Yasierul | 🟡 badge live, rest pending |
 | Security (Login & Password) | 10 | Aliff | ✅ |
 | Efficiency & Bug-Free Operation | 10 | Everyone | ⏳ |
 | Interface Design (JSP/JSF) | 10 | Amir | 🟡 |

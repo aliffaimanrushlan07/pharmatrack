@@ -16,7 +16,7 @@ assignees: ''
 
 ## Files involved
 
-<!-- e.g. dao/SupplierDAO.java, controller/SupplierServlet.java -->
+<!-- e.g. dao/SaleDAO.java, controller/SaleServlet.java -->
 
 ## Done when
 
