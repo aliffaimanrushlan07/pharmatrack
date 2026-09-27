@@ -17,7 +17,7 @@
         <h3>Page not found</h3>
         <p>That page does not exist in PharmaTrack.</p>
         <p style="margin-top:16px">
-            <a href="${pageContext.request.contextPath}/dashboard.jsp" class="btn">Back to dashboard</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn">Back to dashboard</a>
         </p>
     </div>
 </div>

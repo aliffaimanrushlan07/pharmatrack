@@ -26,9 +26,9 @@
 
 <nav class="navbar">
     <div class="navbar-inner">
-        <a href="${pageContext.request.contextPath}/dashboard.jsp" class="brand">PharmaTrack</a>
+        <a href="${pageContext.request.contextPath}/dashboard" class="brand">PharmaTrack</a>
 
-        <a href="${pageContext.request.contextPath}/dashboard.jsp"
+        <a href="${pageContext.request.contextPath}/dashboard"
            class="${activeNav eq 'dashboard' ? 'active' : ''}">Dashboard</a>
         <a href="${pageContext.request.contextPath}/medicine"
            class="${activeNav eq 'medicine' ? 'active' : ''}">Medicines</a>

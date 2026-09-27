@@ -127,7 +127,7 @@ public class LoginServlet extends HttpServlet {
             if (redirectTarget != null && !redirectTarget.isEmpty()) {
                 response.sendRedirect(redirectTarget);
             } else {
-                response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
             }
 
         } catch (SQLException ex) {

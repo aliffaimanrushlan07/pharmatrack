@@ -21,7 +21,7 @@
         <p>The system could not complete that request. The most common cause is
            that MySQL is not running, or <code>db.properties</code> has the wrong password.</p>
         <p style="margin-top:16px">
-            <a href="${pageContext.request.contextPath}/dashboard.jsp" class="btn">Back to dashboard</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn">Back to dashboard</a>
         </p>
         <p class="hint" style="margin-top:20px">
             Developers: the full stack trace is in the Tomcat output window in NetBeans.

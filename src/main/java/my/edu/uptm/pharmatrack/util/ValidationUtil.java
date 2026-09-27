@@ -5,8 +5,7 @@ package my.edu.uptm.pharmatrack.util;
  *
  * <p>=====================================================================<br>
  * MODULE OWNER: <b>AMIR</b> — CRUD &amp; Core Application Module<br>
- * STATUS: <b>PARTIAL</b> — the three methods used by MedicineServlet are
- * done; the rest are Amir's TODOs.<br>
+ * STATUS: <b>COMPLETE</b>.<br>
  * =====================================================================</p>
  *
  * <p>Everything arriving from a browser is a {@code String} and may be null,
@@ -56,7 +55,7 @@ public final class ValidationUtil {
     }
 
     /**
-     * TODO 1 (AMIR) — basic email format check for form input.
+     * Basic email format check for form input.
      *
      * <p>A simple regex is enough here. Do not try to write a fully
      * RFC-compliant email regex; it is famously several hundred characters
@@ -66,13 +65,12 @@ public final class ValidationUtil {
      * @return true when the address looks plausible.
      */
     public static boolean isValidEmail(String email) {
-        // TODO 1: implement, e.g.
-        //   return isBlank(email) || email.matches("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$");
-        return true;
+        return isBlank(email)
+            || email.trim().matches("^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$");
     }
 
     /**
-     * TODO 2 (AMIR) — Malaysian phone number check for form input.
+     * Malaysian phone number check for form input.
      *
      * <p>Accept the formats actually used: {@code 03-3342 2222},
      * {@code 0333422222}, {@code +603 3342 2222}. Strip spaces and dashes
@@ -82,12 +80,16 @@ public final class ValidationUtil {
      * @return true when the number looks plausible.
      */
     public static boolean isValidPhone(String phone) {
-        // TODO 2: implement.
-        return true;
+        if (isBlank(phone)) {
+            return true;
+        }
+
+        String normalised = phone.trim().replaceAll("[\\s-]", "");
+        return normalised.matches("^(?:\\+60|0)\\d{8,10}$");
     }
 
     /**
-     * TODO 3 (AMIR) — escape HTML before echoing user input back into a page.
+     * Escapes HTML before echoing user input back into a page.
      *
      * <p>Defends against stored XSS: if someone saves a medicine named
      * {@code <script>alert(1)</script>}, the list page must display that text,
@@ -102,7 +104,16 @@ public final class ValidationUtil {
      * @return the same text with {@code & < > " '} replaced by entities.
      */
     public static String escapeHtml(String input) {
-        // TODO 3: implement.
-        return input;
+        if (input == null) {
+            return "";
+        }
+
+        // Ampersand must be replaced first so the entities introduced by the
+        // later replacements are not escaped a second time.
+        return input.replace("&", "&amp;")
+                    .replace("<", "&lt;")
+                    .replace(">", "&gt;")
+                    .replace("\"", "&quot;")
+                    .replace("'", "&#39;");
     }
 }

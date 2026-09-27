@@ -1,9 +1,16 @@
 package my.edu.uptm.pharmatrack.dao;
 
 import my.edu.uptm.pharmatrack.model.Sale;
+import my.edu.uptm.pharmatrack.model.SaleItem;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +20,7 @@ import java.util.Map;
  *
  * <p>=====================================================================<br>
  * MODULE OWNER: <b>YASIERUL</b> — Business Logic, Reports &amp; Documentation<br>
- * STATUS: <b>STUB — Yasierul to implement</b><br>
+ * STATUS: <b>COMPLETE</b><br>
  * =====================================================================</p>
  *
  * <p><b>This is the hardest DAO in the project, and the most valuable.</b>
@@ -59,13 +66,13 @@ import java.util.Map;
  * with 5 in stock: the sale is rejected, and afterwards the sales table has no
  * orphan row and the stock is untouched. Examiners like seeing that.</p>
  *
- * <p>Tick these off — each one is a commit:</p>
+ * <p>Implemented operations:</p>
  * <ol>
- *   <li>TODO 1 — {@link #findAll()} (easiest, start here)</li>
- *   <li>TODO 2 — {@link #findById(int)} with its line items</li>
- *   <li>TODO 3 — {@link #insertSale(Sale)} — the transaction</li>
- *   <li>TODO 4 — {@link #findByDateRange(String, String)} — search</li>
- *   <li>TODO 5 — {@link #getDailySummary()} — calculation / report</li>
+ *   <li>{@link #findAll()}</li>
+ *   <li>{@link #findById(int)} with its line items</li>
+ *   <li>{@link #insertSale(Sale)} — the transaction</li>
+ *   <li>{@link #findByDateRange(String, String)} — search</li>
+ *   <li>{@link #getDailySummary()} — calculation / report</li>
  * </ol>
  *
  * @author Yasierul
@@ -99,7 +106,8 @@ public class SaleDAO {
       + "       si.unit_price, si.subtotal, m.name AS medicine_name "
       + "FROM sale_items si "
       + "JOIN medicines m ON m.medicine_id = si.medicine_id "
-      + "WHERE si.sale_id = ?";
+      + "WHERE si.sale_id = ? "
+      + "ORDER BY si.sale_item_id";
 
     protected static final String SQL_INSERT_SALE =
         "INSERT INTO sales (user_id, total_amount) VALUES (?, ?)";
@@ -130,20 +138,27 @@ public class SaleDAO {
 
 
     /**
-     * TODO 1 (YASIERUL) — every sale, newest first. Header rows only, no line
+     * Every sale, newest first. Header rows only, no line
      * items (that would be a query per row — slow and unnecessary for a list).
      *
      * @return all sales, never null.
      * @throws SQLException if the query fails.
      */
     public List<Sale> findAll() throws SQLException {
-        // TODO 1: implement. Closest pattern: MedicineDAO.findAll()
-        throw new UnsupportedOperationException(
-            "SaleDAO.findAll() not implemented yet — assigned to Yasierul (TODO 1).");
+        List<Sale> sales = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_FIND_ALL);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                sales.add(mapSale(rs));
+            }
+        }
+        return sales;
     }
 
     /**
-     * TODO 2 (YASIERUL) — one sale WITH its line items, for the receipt page.
+     * One sale WITH its line items, for the receipt page.
      *
      * <p>Two queries: {@code SQL_FIND_BY_ID} for the header, then
      * {@code SQL_FIND_ITEMS} for the lines, added with
@@ -154,13 +169,34 @@ public class SaleDAO {
      * @throws SQLException if a query fails.
      */
     public Sale findById(int saleId) throws SQLException {
-        // TODO 2: implement.
-        throw new UnsupportedOperationException(
-            "SaleDAO.findById() not implemented yet — assigned to Yasierul (TODO 2).");
+        try (Connection conn = DBConnection.getConnection()) {
+            Sale sale;
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_FIND_BY_ID)) {
+                ps.setInt(1, saleId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    sale = rs.next() ? mapSale(rs) : null;
+                }
+            }
+
+            if (sale == null) {
+                return null;
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(SQL_FIND_ITEMS)) {
+                ps.setInt(1, saleId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        sale.addItem(mapSaleItem(rs));
+                    }
+                }
+            }
+            return sale;
+        }
     }
 
     /**
-     * TODO 3 (YASIERUL) — record a complete sale inside one transaction.
+     * Records a complete sale inside one transaction.
      *
      * <p>This is the centrepiece of your module. Follow the pattern in the
      * class comment above. Do not skip the rollback — a sale that half-happens
@@ -172,13 +208,78 @@ public class SaleDAO {
      *         first, so the database is left exactly as it was.
      */
     public int insertSale(Sale sale) throws SQLException {
-        // TODO 3: implement the transaction.
-        throw new UnsupportedOperationException(
-            "SaleDAO.insertSale() not implemented yet — assigned to Yasierul (TODO 3).");
+        validateSale(sale);
+        MedicineDAO medicineDAO = new MedicineDAO();
+
+        try (Connection conn = DBConnection.getConnection()) {
+            conn.setAutoCommit(false);
+
+            try {
+                int saleId;
+
+                try (PreparedStatement ps = conn.prepareStatement(
+                        SQL_INSERT_SALE, Statement.RETURN_GENERATED_KEYS)) {
+                    ps.setInt(1, sale.getUserId());
+                    ps.setBigDecimal(2, java.math.BigDecimal.ZERO);
+
+                    if (ps.executeUpdate() != 1) {
+                        throw new SQLException("Could not create the sale header.");
+                    }
+
+                    try (ResultSet keys = ps.getGeneratedKeys()) {
+                        if (!keys.next()) {
+                            throw new SQLException("The database did not return a sale id.");
+                        }
+                        saleId = keys.getInt(1);
+                    }
+                }
+
+                try (PreparedStatement itemStatement = conn.prepareStatement(SQL_INSERT_ITEM)) {
+                    for (SaleItem item : sale.getItems()) {
+                        itemStatement.setInt(1, saleId);
+                        itemStatement.setInt(2, item.getMedicineId());
+                        itemStatement.setInt(3, item.getQuantity());
+                        itemStatement.setBigDecimal(4, item.getUnitPrice());
+
+                        if (itemStatement.executeUpdate() != 1) {
+                            throw new SQLException("Could not save a sale line.");
+                        }
+
+                        if (!medicineDAO.deductStock(
+                                conn, item.getMedicineId(), item.getQuantity())) {
+                            throw new SQLException(
+                                "Insufficient stock for medicine " + item.getMedicineId() + ".");
+                        }
+                    }
+                }
+
+                java.math.BigDecimal total = sale.calculateTotal();
+                try (PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_TOTAL)) {
+                    ps.setBigDecimal(1, total);
+                    ps.setInt(2, saleId);
+                    if (ps.executeUpdate() != 1) {
+                        throw new SQLException("Could not update the sale total.");
+                    }
+                }
+
+                conn.commit();
+                sale.setSaleId(saleId);
+                sale.setTotalAmount(total);
+                return saleId;
+
+            } catch (SQLException | RuntimeException ex) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackFailure) {
+                    ex.addSuppressed(rollbackFailure);
+                }
+                throw ex;
+            }
+        }
     }
 
     /**
-     * TODO 4 (YASIERUL) — SEARCH FEATURE: sales within a date range.
+     * SEARCH FEATURE: sales within a date range.
      *
      * <p>Append {@code " 23:59:59"} to the end date, otherwise MySQL reads it
      * as midnight and silently excludes everything sold on the last day — a
@@ -190,13 +291,39 @@ public class SaleDAO {
      * @throws SQLException if the query fails.
      */
     public List<Sale> findByDateRange(String startDate, String endDate) throws SQLException {
-        // TODO 4: implement.
-        throw new UnsupportedOperationException(
-            "SaleDAO.findByDateRange() not implemented yet — assigned to Yasierul (TODO 4).");
+        if (isBlank(startDate) && isBlank(endDate)) {
+            return findAll();
+        }
+        if (isBlank(startDate) || isBlank(endDate)) {
+            throw new SQLException("Both start and end dates are required.");
+        }
+
+        Timestamp start;
+        Timestamp end;
+        try {
+            start = Timestamp.valueOf(startDate.trim() + " 00:00:00");
+            end = Timestamp.valueOf(endDate.trim() + " 23:59:59");
+        } catch (IllegalArgumentException ex) {
+            throw new SQLException("Dates must use yyyy-MM-dd format.", ex);
+        }
+
+        List<Sale> sales = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_FIND_BY_DATE_RANGE)) {
+            ps.setTimestamp(1, start);
+            ps.setTimestamp(2, end);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    sales.add(mapSale(rs));
+                }
+            }
+        }
+        return sales;
     }
 
     /**
-     * TODO 5 (YASIERUL) — CALCULATION FEATURE: per-day totals and averages.
+     * CALCULATION FEATURE: per-day totals and averages.
      *
      * <p>Feeds the sales report page. Each map holds the keys
      * {@code sale_day}, {@code transactions}, {@code revenue} and
@@ -207,8 +334,63 @@ public class SaleDAO {
      * @throws SQLException if the query fails.
      */
     public List<Map<String, Object>> getDailySummary() throws SQLException {
-        // TODO 5: implement using SQL_DAILY_SUMMARY.
-        throw new UnsupportedOperationException(
-            "SaleDAO.getDailySummary() not implemented yet — assigned to Yasierul (TODO 5).");
+        List<Map<String, Object>> summary = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_DAILY_SUMMARY);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("sale_day", rs.getDate("sale_day"));
+                row.put("transactions", rs.getInt("transactions"));
+                row.put("revenue", rs.getBigDecimal("revenue"));
+                row.put("average_sale", rs.getBigDecimal("average_sale"));
+                summary.add(row);
+            }
+        }
+        return summary;
+    }
+
+    private Sale mapSale(ResultSet rs) throws SQLException {
+        Sale sale = new Sale();
+        sale.setSaleId(rs.getInt("sale_id"));
+        sale.setSaleDate(rs.getTimestamp("sale_date"));
+        sale.setUserId(rs.getInt("user_id"));
+        sale.setTotalAmount(rs.getBigDecimal("total_amount"));
+        sale.setCashierName(rs.getString("cashier_name"));
+        return sale;
+    }
+
+    private SaleItem mapSaleItem(ResultSet rs) throws SQLException {
+        SaleItem item = new SaleItem();
+        item.setSaleItemId(rs.getInt("sale_item_id"));
+        item.setSaleId(rs.getInt("sale_id"));
+        item.setMedicineId(rs.getInt("medicine_id"));
+        item.setQuantity(rs.getInt("quantity"));
+        item.setUnitPrice(rs.getBigDecimal("unit_price"));
+        item.setMedicineName(rs.getString("medicine_name"));
+        return item;
+    }
+
+    private void validateSale(Sale sale) throws SQLException {
+        if (sale == null) {
+            throw new SQLException("Sale is required.");
+        }
+        if (sale.getUserId() <= 0) {
+            throw new SQLException("A logged-in cashier is required.");
+        }
+        if (sale.getItems() == null || sale.getItems().isEmpty()) {
+            throw new SQLException("The basket is empty.");
+        }
+        for (SaleItem item : sale.getItems()) {
+            if (item == null || item.getMedicineId() <= 0
+                    || item.getQuantity() <= 0 || item.getUnitPrice() == null) {
+                throw new SQLException("The basket contains an invalid sale line.");
+            }
+        }
+    }
+
+    private boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 }

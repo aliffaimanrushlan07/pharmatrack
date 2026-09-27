@@ -24,7 +24,7 @@ public class Sale implements Serializable {
     private Timestamp      saleDate;
     private int            userId;
     private BigDecimal     totalAmount;
-    private transient List<SaleItem> items;
+    private List<SaleItem> items;
 
     /** Joined in for display — which staff member rang up the sale. */
     private String         cashierName;
