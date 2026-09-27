@@ -20,11 +20,11 @@
 | `webapp/medicine/form.jsp` | ✅ Done | Your template for form pages |
 | `webapp/css/style.css` | ✅ Done | Tweak freely, it is yours |
 | `webapp/includes/*.jspf` | ✅ Done | Shared header/footer |
-| `controller/SaleServlet.java` | 🔴 **STUB** | TODO 1–5 · the point-of-sale screen |
-| `webapp/sale/pos.jsp` | 🔴 **STUB** | The till screen |
-| `webapp/sale/receipt.jsp` | 🔴 **STUB** | Printable receipt |
-| `util/ValidationUtil.java` | 🟡 Partial | TODO 1–3 |
-| `webapp/dashboard.jsp` | 🟡 Partial | Move it behind a servlet |
+| `controller/SaleServlet.java` | ✅ Done | Session basket and completion flow |
+| `webapp/sale/pos.jsp` | ✅ Done | The till screen |
+| `webapp/sale/receipt.jsp` | ✅ Done | Printable receipt |
+| `util/ValidationUtil.java` | ✅ Done | Email, phone and HTML helpers |
+| `webapp/dashboard.jsp` | ✅ Done | Served through `DashboardServlet` |
 
 **Report sections you own:** 6.1 Use Case Diagram, 6.2 Activity Diagram,
 7. Interface Design.
@@ -42,12 +42,12 @@ basket lives in the **HTTP session** as a `Sale` object until the cashier
 presses *Complete sale*. Nothing touches the database until the sale is final,
 so an abandoned basket leaves no orphan rows and no wrongly-deducted stock.
 
-- [ ] **TODO 1** — `?action=add` · get the `Sale` from the session (create if
+- [x] **TODO 1** — `?action=add` · get the `Sale` from the session (create if
       absent), add a `SaleItem`, put it back
-- [ ] **TODO 2** — `?action=remove` and `?action=clear`
-- [ ] **TODO 3** — running total via `SalesCalculator.calculateSubtotal()`
-- [ ] **TODO 4** — `?action=complete` · calls `saleDAO.insertSale()`
-- [ ] **TODO 5** — receipt page after a successful sale
+- [x] **TODO 2** — `?action=remove` and `?action=clear`
+- [x] **TODO 3** — running total via `SalesCalculator.calculateSubtotal()`
+- [x] **TODO 4** — `?action=complete` · calls `saleDAO.insertSale()`
+- [x] **TODO 5** — receipt page after a successful sale
 
 Layout that works:
 
@@ -73,13 +73,13 @@ parallel — do not wait for him to finish before starting the JSPs.
 
 **File:** `src/main/java/my/edu/uptm/pharmatrack/util/ValidationUtil.java`
 
-- [ ] **TODO 1** — `isValidEmail()`. A simple regex is fine:
+- [x] **TODO 1** — `isValidEmail()`. A simple regex is fine:
       `^[\\w.+-]+@[\\w-]+\\.[\\w.-]+$`. Do not attempt a fully RFC-compliant
       email regex; it is several hundred characters and still wrong.
-- [ ] **TODO 2** — `isValidPhone()`. Accept the formats people actually type:
+- [x] **TODO 2** — `isValidPhone()`. Accept the formats people actually type:
       `03-3342 2222`, `0333422222`, `+603 3342 2222`. Strip spaces and dashes
       first, then check length.
-- [ ] **TODO 3** — `escapeHtml()`. Replace `& < > " '` with entities.
+- [x] **TODO 3** — `escapeHtml()`. Replace `& < > " '` with entities.
 
 ---
 

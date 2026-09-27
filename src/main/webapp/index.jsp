@@ -10,6 +10,6 @@
 <%@ page import="my.edu.uptm.pharmatrack.security.AuthFilter" %>
 <%
     Object user = (session != null) ? session.getAttribute(AuthFilter.SESSION_USER) : null;
-    String target = (user != null) ? "dashboard.jsp" : "login.jsp";
+    String target = (user != null) ? "dashboard" : "login.jsp";
     response.sendRedirect(request.getContextPath() + "/" + target);
 %>

@@ -2,13 +2,26 @@ package my.edu.uptm.pharmatrack.controller;
 
 import my.edu.uptm.pharmatrack.dao.MedicineDAO;
 import my.edu.uptm.pharmatrack.dao.SaleDAO;
+import my.edu.uptm.pharmatrack.model.Medicine;
+import my.edu.uptm.pharmatrack.model.Sale;
+import my.edu.uptm.pharmatrack.model.SaleItem;
+import my.edu.uptm.pharmatrack.model.User;
+import my.edu.uptm.pharmatrack.security.AuthFilter;
+import my.edu.uptm.pharmatrack.service.SalesCalculator;
+import my.edu.uptm.pharmatrack.util.ValidationUtil;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Controller for the point-of-sale screen — building a basket and completing
@@ -16,8 +29,8 @@ import java.io.IOException;
  *
  * <p>=====================================================================<br>
  * MODULE OWNER: <b>AMIR</b> — Sale &amp; Reporting Module<br>
- * STATUS: <b>STUB — Amir to implement</b><br>
- * DEPENDS ON: {@link SaleDAO} and {@code SalesCalculator} (both yours)<br>
+ * STATUS: <b>COMPLETE</b><br>
+ * DEPENDS ON: {@link SaleDAO} and {@link SalesCalculator}<br>
  * =====================================================================</p>
  *
  * <p><b>The one design decision to make first: where does the basket live
@@ -43,13 +56,13 @@ import java.io.IOException;
  * basket is still open. The {@code deductStock} query in {@link MedicineDAO}
  * is the final guard — it refuses to take stock below zero.</p>
  *
- * <p>Order of work — each item is a commit:</p>
+ * <p>Implemented operations:</p>
  * <ol>
- *   <li>TODO 1 — {@code action=add}, basket held in session</li>
- *   <li>TODO 2 — {@code action=remove} and {@code action=clear}</li>
- *   <li>TODO 3 — live total via {@code SalesCalculator}</li>
- *   <li>TODO 4 — {@code action=complete}, calling {@code SaleDAO.insertSale}</li>
- *   <li>TODO 5 — receipt page after a successful sale</li>
+ *   <li>{@code action=add}, with the basket held in session</li>
+ *   <li>{@code action=remove} and {@code action=clear}</li>
+ *   <li>live total via {@code SalesCalculator}</li>
+ *   <li>{@code action=complete}, calling {@code SaleDAO.insertSale}</li>
+ *   <li>receipt page after a successful sale</li>
  * </ol>
  *
  * @author Amir
@@ -58,6 +71,7 @@ import java.io.IOException;
 public class SaleServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = Logger.getLogger(SaleServlet.class.getName());
 
     /** Session attribute holding the in-progress basket. */
     public static final String SESSION_CART = "currentSale";
@@ -75,14 +89,19 @@ public class SaleServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // TODO 1-5 (AMIR): route on ?action= as described in the class
-        // comment above. Pattern to copy: MedicineServlet.doGet().
+        String action = request.getParameter("action");
 
-        request.setAttribute("errorMessage",
-            "Point-of-sale module is not implemented yet (assigned to Amir). "
-          + "See SaleServlet TODO 1-5 and SaleDAO TODO 1-5.");
-
-        request.getRequestDispatcher("/sale/pos.jsp").forward(request, response);
+        try {
+            if ("receipt".equals(action)) {
+                showReceipt(request, response);
+            } else {
+                showPointOfSale(request, response);
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Database error in SaleServlet", ex);
+            request.setAttribute("errorMessage", "Could not load sales data. Please try again.");
+            request.getRequestDispatcher("/sale/pos.jsp").forward(request, response);
+        }
     }
 
     @Override
@@ -90,6 +109,194 @@ public class SaleServlet extends HttpServlet {
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
-        doGet(request, response);
+
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
+
+        try {
+            switch (action) {
+                case "add":
+                    addItem(request, response);
+                    break;
+                case "remove":
+                    removeItem(request, response);
+                    break;
+                case "clear":
+                    clearCart(request, response);
+                    break;
+                case "complete":
+                    completeSale(request, response);
+                    break;
+                default:
+                    redirectWithMessage(request, response, "error", "Unknown sale action.");
+                    break;
+            }
+        } catch (SQLException ex) {
+            LOGGER.log(Level.SEVERE, "Database error while processing a sale", ex);
+            redirectWithMessage(request, response, "error",
+                    "The sale could not be completed: " + ex.getMessage());
+        }
+    }
+
+    private void showPointOfSale(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        String keyword = ValidationUtil.trimToEmpty(request.getParameter("keyword"));
+        request.setAttribute("medicines", keyword.isEmpty()
+                ? medicineDAO.findAll()
+                : medicineDAO.search(keyword));
+        request.setAttribute("keyword", keyword);
+
+        Sale cart = getOrCreateCart(request.getSession());
+        recalculate(cart);
+        request.getRequestDispatcher("/sale/pos.jsp").forward(request, response);
+    }
+
+    private void addItem(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException {
+        int medicineId = ValidationUtil.parseInt(request.getParameter("medicineId"), -1);
+        int quantity = ValidationUtil.parseInt(request.getParameter("quantity"), 0);
+
+        if (medicineId <= 0 || quantity <= 0) {
+            redirectWithMessage(request, response, "error",
+                    "Choose a medicine and enter a quantity greater than zero.");
+            return;
+        }
+
+        Medicine medicine = medicineDAO.findById(medicineId);
+        if (medicine == null) {
+            redirectWithMessage(request, response, "error", "Medicine not found.");
+            return;
+        }
+
+        Sale cart = getOrCreateCart(request.getSession());
+        SaleItem existing = findItem(cart, medicineId);
+        int quantityAlreadyInCart = existing == null ? 0 : existing.getQuantity();
+
+        if (quantity > medicine.getQuantityInStock() - quantityAlreadyInCart) {
+            redirectWithMessage(request, response, "error",
+                    "Only " + medicine.getQuantityInStock() + " unit(s) of "
+                    + medicine.getName() + " are currently in stock.");
+            return;
+        }
+
+        if (existing == null) {
+            SaleItem item = new SaleItem(medicineId, quantity, medicine.getPrice());
+            item.setMedicineName(medicine.getName());
+            cart.addItem(item);
+        } else {
+            existing.setQuantity(existing.getQuantity() + quantity);
+            existing.setUnitPrice(medicine.getPrice());
+            existing.setMedicineName(medicine.getName());
+        }
+
+        recalculate(cart);
+        redirectWithMessage(request, response, "success",
+                medicine.getName() + " added to the basket.");
+    }
+
+    private void removeItem(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int medicineId = ValidationUtil.parseInt(request.getParameter("medicineId"), -1);
+        Sale cart = getOrCreateCart(request.getSession());
+        boolean removed = false;
+
+        Iterator<SaleItem> iterator = cart.getItems().iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getMedicineId() == medicineId) {
+                iterator.remove();
+                removed = true;
+                break;
+            }
+        }
+
+        recalculate(cart);
+        redirectWithMessage(request, response, removed ? "success" : "error",
+                removed ? "Item removed from the basket." : "Basket item not found.");
+    }
+
+    private void clearCart(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        request.getSession().removeAttribute(SESSION_CART);
+        redirectWithMessage(request, response, "success", "Basket cleared.");
+    }
+
+    private void completeSale(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, IOException {
+        HttpSession session = request.getSession(false);
+        Sale cart = session == null ? null : (Sale) session.getAttribute(SESSION_CART);
+        User user = session == null ? null
+                : (User) session.getAttribute(AuthFilter.SESSION_USER);
+
+        if (cart == null || cart.getItems() == null || cart.getItems().isEmpty()) {
+            redirectWithMessage(request, response, "error", "The basket is empty.");
+            return;
+        }
+        if (user == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return;
+        }
+
+        // Friendly pre-check. SaleDAO repeats the stock check atomically while
+        // deducting it, which closes the race with another cashier.
+        for (SaleItem item : cart.getItems()) {
+            Medicine current = medicineDAO.findById(item.getMedicineId());
+            if (current == null || current.getQuantityInStock() < item.getQuantity()) {
+                redirectWithMessage(request, response, "error",
+                        "Stock changed while the basket was open. Review the quantities.");
+                return;
+            }
+        }
+
+        cart.setUserId(user.getUserId());
+        recalculate(cart);
+        int saleId = saleDAO.insertSale(cart);
+
+        session.removeAttribute(SESSION_CART);
+        response.sendRedirect(request.getContextPath()
+                + "/sale?action=receipt&id=" + saleId);
+    }
+
+    private void showReceipt(HttpServletRequest request, HttpServletResponse response)
+            throws SQLException, ServletException, IOException {
+        int saleId = ValidationUtil.parseInt(request.getParameter("id"), -1);
+        Sale sale = saleId > 0 ? saleDAO.findById(saleId) : null;
+
+        if (sale == null) {
+            redirectWithMessage(request, response, "error", "Receipt not found.");
+            return;
+        }
+
+        request.setAttribute("sale", sale);
+        request.getRequestDispatcher("/sale/receipt.jsp").forward(request, response);
+    }
+
+    private Sale getOrCreateCart(HttpSession session) {
+        Sale cart = (Sale) session.getAttribute(SESSION_CART);
+        if (cart == null) {
+            cart = new Sale();
+            session.setAttribute(SESSION_CART, cart);
+        }
+        return cart;
+    }
+
+    private SaleItem findItem(Sale cart, int medicineId) {
+        for (SaleItem item : cart.getItems()) {
+            if (item.getMedicineId() == medicineId) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private void recalculate(Sale cart) {
+        cart.setTotalAmount(SalesCalculator.calculateSubtotal(cart.getItems()));
+    }
+
+    private void redirectWithMessage(HttpServletRequest request, HttpServletResponse response,
+                                     String type, String message) throws IOException {
+        response.sendRedirect(request.getContextPath() + "/sale?" + type + "="
+                + URLEncoder.encode(message, "UTF-8"));
     }
 }
