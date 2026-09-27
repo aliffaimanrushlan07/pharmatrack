@@ -1,5 +1,7 @@
 package my.edu.uptm.pharmatrack.security;
 
+import my.edu.uptm.pharmatrack.model.User;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -7,6 +9,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -49,8 +54,8 @@ import java.io.IOException;
  */
 @WebFilter(filterName = "RoleFilter", urlPatterns = {
     // TODO 2: add the rest once the filter body works.
-    //   "/medicine",
-    //   "/user/*",
+    "/medicine",
+    "/user/*",
     "/admin/*"
 })
 public class RoleFilter implements Filter {
@@ -70,19 +75,20 @@ public class RoleFilter implements Filter {
         // is doing nothing. Leaving it like this on submission day would cost
         // marks in the Security band.
         //
-        // HttpServletRequest  req = (HttpServletRequest)  request;
-        // HttpServletResponse res = (HttpServletResponse) response;
-        // HttpSession session = req.getSession(false);
-        // User user = (session == null) ? null
-        //           : (User) session.getAttribute(AuthFilter.SESSION_USER);
-        //
-        // if (user != null && user.isAdmin()) {
-        //     chain.doFilter(request, response);
-        // } else {
-        //     res.sendRedirect(req.getContextPath() + "/dashboard.jsp?error=forbidden");
-        // }
+            HttpServletRequest  req = (HttpServletRequest)  request;
+            HttpServletResponse res = (HttpServletResponse) response;
+            
+            HttpSession session = req.getSession(false);
+            User user = (session == null) ? null
+                    : (User) session.getAttribute(AuthFilter.SESSION_USER);
 
-        chain.doFilter(request, response);
+            if (user != null && user.isAdmin()) {
+                chain.doFilter(request, response);
+            } else {
+                res.sendRedirect(req.getContextPath() + "/dashboard.jsp?error=forbidden");
+            }
+
+        //chain.doFilter(request, response);
     }
 
     @Override
