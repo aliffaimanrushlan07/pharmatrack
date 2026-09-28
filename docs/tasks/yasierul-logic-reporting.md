@@ -21,14 +21,16 @@
 
 | File | Status | What to do |
 |------|--------|------------|
-| `controller/SearchServlet.java` | 🔴 **STUB** | TODO 1–4 · **do this first** |
-| `webapp/search.jsp` | 🔴 **STUB** | Results table |
-| `dao/SaleDAO.java` | 🔴 **STUB** | TODO 1–5 · includes the transaction |
-| `service/SalesCalculator.java` | 🟡 Partial | TODO 1–4 |
-| `controller/ReportServlet.java` | 🟡 Partial | TODO 1–3 · routing + stock report done |
+| `controller/SearchServlet.java` | ✅ Done | TODO 1–4 |
+| `webapp/search.jsp` | ✅ Done | Results table, count, sticky inputs |
+| `dao/SaleDAO.java` | ✅ Done | TODO 1–5 · includes the transaction |
+| `dao/ReportDAO.java` | ✅ Done | Expiring-soon query (new) |
+| `service/SalesCalculator.java` | ✅ Done | TODO 1–4 + report totals |
+| `controller/ReportServlet.java` | ✅ Done | TODO 1–3 |
 | `webapp/report/stock.jsp` | ✅ Done | Inventory valuation — **your worked example** |
-| `webapp/report/sales.jsp` | 🔴 **STUB** | Sales summary — copy `stock.jsp` |
-| `docs/USER-MANUAL.md` | 🔴 **STUB** | Report section 11 |
+| `webapp/report/sales.jsp` | ✅ Done | Sales summary |
+| `webapp/report/expiry.jsp` | ✅ Done | Expiring soon (new) |
+| `docs/USER-MANUAL.md` | ✅ Done | Report section 11 — 22 screenshots included (take #10 yourself) |
 
 **Report sections you own:** 5. System Scope, 8. Contribution Matrix (compile),
 10. GitHub link, 11. User Manual, 12. References.
@@ -42,13 +44,13 @@
 Highest marks-per-hour in the whole project. `MedicineDAO.search(keyword)` is
 already written and tested, so your first working version is about fifteen lines.
 
-- [ ] **TODO 1** — read `keyword`, call `medicineDAO.search(keyword)`, put the
+- [x] **TODO 1** — read `keyword`, call `medicineDAO.search(keyword)`, put the
       result in a request attribute called `results`, forward to `search.jsp`
-- [ ] Render the results table in `search.jsp` — copy the markup from
+- [x] Render the results table in `search.jsp` — copy the markup from
       `medicine/list.jsp`
-- [ ] **TODO 2–3** — a `type` parameter switching between medicines and sales;
+- [x] **TODO 2–3** — a `type` parameter switching between medicines and sales;
       sales use `findByDateRange` (needs SaleDAO TODO 4)
-- [ ] **TODO 4** — show `No results found for "xyz"` rather than an empty table
+- [x] **TODO 4** — show `No results found for "xyz"` rather than an empty table
 
 **Two details that lift this from Satisfactory to Excellent, two lines each:**
 
@@ -65,11 +67,11 @@ already written and tested, so your first working version is about fifteen lines
 `calculateSubtotal()` is done as your worked example. The rest follow the same
 shape.
 
-- [ ] **TODO 1** — `applyDiscount()` · multiply first, round last
-- [ ] **TODO 2** — `calculateTax()` · using `SST_RATE`
-- [ ] **TODO 3** — `calculateChange()` · return negative when the payment is short,
+- [x] **TODO 1** — `applyDiscount()` · multiply first, round last
+- [x] **TODO 2** — `calculateTax()` · using `SST_RATE`
+- [x] **TODO 3** — `calculateChange()` · return negative when the payment is short,
       so the JSP can say "short by RM 3.50"
-- [ ] **TODO 4** — `calculateAverageSale()` · ⚠️ guard against divide-by-zero on
+- [x] **TODO 4** — `calculateAverageSale()` · ⚠️ guard against divide-by-zero on
       an empty database. That `ArithmeticException` is a classic way to crash a
       demo on the examiner's freshly-seeded machine.
 
@@ -87,12 +89,12 @@ The hardest piece of code in the project, and the most valuable. The full
 transaction pattern is written out in the class comment at the top of the file —
 follow it closely.
 
-- [ ] **TODO 1** — `findAll()` · easiest, start here
-- [ ] **TODO 2** — `findById()` · two queries: header, then line items
-- [ ] **TODO 3** — `insertSale()` · **the transaction**
-- [ ] **TODO 4** — `findByDateRange()` · ⚠️ append `" 23:59:59"` to the end date,
+- [x] **TODO 1** — `findAll()` · easiest, start here
+- [x] **TODO 2** — `findById()` · two queries: header, then line items
+- [x] **TODO 3** — `insertSale()` · **the transaction**
+- [x] **TODO 4** — `findByDateRange()` · ⚠️ append `" 23:59:59"` to the end date,
       or MySQL reads it as midnight and silently drops the last day's sales
-- [ ] **TODO 5** — `getDailySummary()` · feeds the report
+- [x] **TODO 5** — `getDailySummary()` · feeds the report
 
 **Why `insertSale` has to be a transaction:** one user action writes to three
 tables — the receipt header, its lines, and the stock deduction. If the stock
@@ -150,10 +152,10 @@ about to write, one report earlier:
 - `StockValuation.grandTotal()` — the total row, calculated in Java
 - `webapp/report/stock.jsp` — tabs, summary tiles, table, `<tfoot>` total
 
-- [ ] **TODO 1** — `getDailySummary()` rendered in `sales.jsp`
-- [ ] **TODO 2** — grand total revenue and overall average — this row is the
+- [x] **TODO 1** — `getDailySummary()` rendered in `sales.jsp`
+- [x] **TODO 2** — grand total revenue and overall average — this row is the
       single clearest piece of evidence for the calculation criterion
-- [ ] **TODO 3** — expiring-soon report. SQL is ready in
+- [x] **TODO 3** — expiring-soon report. SQL is ready in
       `database/03_sample_queries.sql`, section E1
 
 > **⚠️ The averaging trap, which the examiner may well probe.** The overall

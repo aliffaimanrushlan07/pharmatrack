@@ -116,6 +116,9 @@ thead th {
 tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
 tbody tr:hover { background: #f9fafb; }
 tbody tr:last-child td { border-bottom: none; }
+/* Grand-total rows on the reports: same cell spacing as the body rows. */
+tfoot td { padding: 12px 14px; font-size: 14px; background: #f9fafb;
+           border-top: 2px solid var(--border); }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 
 .table-wrap {
@@ -136,7 +139,7 @@ tbody tr:last-child td { border-bottom: none; }
 .btn-secondary:hover { background: #f3f4f6; }
 .btn-danger       { background: var(--danger); }
 .btn-danger:hover { background: #b91c1c; }
-.btn-sm           { padding: 5px 11px; font-size: 13px; }
+.btn-sm           { padding: 5px 11px; font-size: 13px; white-space: nowrap; }
 
 /* ---------- Forms -------------------------------------------------------- */
 .form-row   { margin-bottom: 16px; }
@@ -160,6 +163,11 @@ input:focus, select:focus, textarea:focus {
 /* ---------- Search bar --------------------------------------------------- */
 .search-bar { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
 .search-bar input[type=text] { flex: 1; min-width: 220px; }
+.search-bar .date-range { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.search-bar .date-range input[type=date] { width: auto; }
+.date-sep { color: var(--text-muted); font-size: 13px; }
+.result-count { margin-bottom: 12px; color: var(--text-muted); font-size: 14px; }
+.result-count strong { color: var(--text); }
 
 /* ---------- Alerts ------------------------------------------------------- */
 .alert {

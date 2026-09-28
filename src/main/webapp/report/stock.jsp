@@ -35,6 +35,7 @@
        class="btn">Inventory valuation</a>
     <a href="${pageContext.request.contextPath}/report?type=sales"
        class="btn btn-secondary">Sales summary</a>
+    
 </div>
 
 <c:choose>

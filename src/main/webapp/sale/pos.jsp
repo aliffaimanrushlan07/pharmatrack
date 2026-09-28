@@ -83,7 +83,7 @@
     <section class="card pos-basket">
         <div class="basket-heading">
             <h2>Basket</h2>
-            <span class="badge badge-ok">${currentSale.totalUnits} item(s)</span>
+            <span class="badge badge-ok">${currentSale.totalUnits} unit(s)</span>
         </div>
         <c:choose>
             <c:when test="${empty currentSale.items}">

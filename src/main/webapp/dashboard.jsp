@@ -37,6 +37,8 @@
 <div class="card">
     <h2>Quick actions</h2>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <%-- Only admins can manage medicines (RoleFilter enforces it; this
+             just avoids offering cashiers a button that would refuse them). --%>
         <c:if test="${loggedInUser.admin}">
             <a href="${pageContext.request.contextPath}/medicine?action=new" class="btn">Add medicine</a>
         </c:if>

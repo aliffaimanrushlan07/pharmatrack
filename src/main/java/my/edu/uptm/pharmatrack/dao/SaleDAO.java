@@ -3,6 +3,7 @@ package my.edu.uptm.pharmatrack.dao;
 import my.edu.uptm.pharmatrack.model.Sale;
 import my.edu.uptm.pharmatrack.model.SaleItem;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -73,6 +74,8 @@ import java.util.Map;
  *   <li>{@link #insertSale(Sale)} — the transaction</li>
  *   <li>{@link #findByDateRange(String, String)} — search</li>
  *   <li>{@link #getDailySummary()} — calculation / report</li>
+ *   <li>{@link #findTotalMismatches()} / {@link #recalculateTotals()} —
+ *       receipt-total integrity check</li>
  * </ol>
  *
  * @author Yasierul
@@ -220,7 +223,7 @@ public class SaleDAO {
                 try (PreparedStatement ps = conn.prepareStatement(
                         SQL_INSERT_SALE, Statement.RETURN_GENERATED_KEYS)) {
                     ps.setInt(1, sale.getUserId());
-                    ps.setBigDecimal(2, java.math.BigDecimal.ZERO);
+                    ps.setBigDecimal(2, BigDecimal.ZERO);
 
                     if (ps.executeUpdate() != 1) {
                         throw new SQLException("Could not create the sale header.");
@@ -253,7 +256,7 @@ public class SaleDAO {
                     }
                 }
 
-                java.math.BigDecimal total = sale.calculateTotal();
+                BigDecimal total = sale.calculateTotal();
                 try (PreparedStatement ps = conn.prepareStatement(SQL_UPDATE_TOTAL)) {
                     ps.setBigDecimal(1, total);
                     ps.setInt(2, saleId);
@@ -349,6 +352,76 @@ public class SaleDAO {
             }
         }
         return summary;
+    }
+
+    // ------------------------------------------------------------------
+    //  Receipt-total integrity check (03_sample_queries.sql, D1/D2)
+    // ------------------------------------------------------------------
+
+    /** Receipts whose stored total disagrees with the sum of their lines. */
+    protected static final String SQL_TOTAL_MISMATCHES =
+        "SELECT sa.sale_id, sa.sale_date, sa.total_amount AS stored_total, "
+      + "       SUM(si.subtotal) AS calculated_total "
+      + "FROM sales sa "
+      + "JOIN sale_items si ON si.sale_id = sa.sale_id "
+      + "GROUP BY sa.sale_id, sa.sale_date, sa.total_amount "
+      + "HAVING sa.total_amount <> SUM(si.subtotal) "
+      + "ORDER BY sa.sale_id";
+
+    /** Pushes the calculated total back into every receipt that is wrong. */
+    protected static final String SQL_RECALCULATE_TOTALS =
+        "UPDATE sales sa "
+      + "JOIN (SELECT sale_id, SUM(subtotal) AS calculated_total "
+      + "      FROM sale_items GROUP BY sale_id) x ON x.sale_id = sa.sale_id "
+      + "SET sa.total_amount = x.calculated_total "
+      + "WHERE sa.total_amount <> x.calculated_total";
+
+    /**
+     * CALCULATION FEATURE: finds receipts whose stored {@code total_amount}
+     * does not equal the sum of their line subtotals.
+     *
+     * <p>The seed data deliberately stores receipt #2 as RM 104.30 when its
+     * lines add up to RM 104.50, so this check has something to find in the
+     * demo. Each map holds {@code sale_id}, {@code sale_date},
+     * {@code stored_total}, {@code calculated_total} and {@code difference}.</p>
+     *
+     * @return the mismatched receipts; empty when every total is correct.
+     * @throws SQLException if the query fails.
+     */
+    public List<Map<String, Object>> findTotalMismatches() throws SQLException {
+        List<Map<String, Object>> rows = new ArrayList<>();
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_TOTAL_MISMATCHES);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                BigDecimal stored = rs.getBigDecimal("stored_total");
+                BigDecimal calculated = rs.getBigDecimal("calculated_total");
+
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("sale_id", rs.getInt("sale_id"));
+                row.put("sale_date", rs.getTimestamp("sale_date"));
+                row.put("stored_total", stored);
+                row.put("calculated_total", calculated);
+                row.put("difference", calculated.subtract(stored));
+                rows.add(row);
+            }
+        }
+        return rows;
+    }
+
+    /**
+     * Corrects every receipt whose stored total disagrees with its lines,
+     * in one UPDATE (so it is atomic on its own).
+     *
+     * @return how many receipts were corrected.
+     * @throws SQLException if the update fails.
+     */
+    public int recalculateTotals() throws SQLException {
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_RECALCULATE_TOTALS)) {
+            return ps.executeUpdate();
+        }
     }
 
     private Sale mapSale(ResultSet rs) throws SQLException {

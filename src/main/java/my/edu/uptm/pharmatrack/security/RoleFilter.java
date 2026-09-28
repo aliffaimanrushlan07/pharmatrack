@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.logging.Logger;
 
 /**
@@ -37,6 +38,14 @@ import java.util.logging.Logger;
  * {@code /medicine} into the address bar, get the 403 page) is a strong
  * 30 seconds of the presentation.</p>
  *
+ * <p><b>How it works:</b> the logged-in {@link User} is read from the
+ * session (put there by {@link AuthFilter}, which runs first). Admins pass
+ * through; anyone else is redirected to the dashboard with an error message.
+ * They are <i>not</i> sent to the login page — they are logged in, just not
+ * permitted, and a login prompt would be confusing.</p>
+ *
+ * <p>The redirect goes to {@code /dashboard} (the servlet), not
+ * {@code dashboard.jsp}, so the dashboard tiles are filled in as usual.</p>
  * <p><b>What is restricted.</b></p>
  * <ul>
  *   <li>{@code /medicine} - the whole medicine module, admin only.</li>
@@ -58,6 +67,7 @@ import java.util.logging.Logger;
  * @author Aliff
  */
 @WebFilter(filterName = "RoleFilter", urlPatterns = {
+    // Admin-only areas. /medicine covers list, add, edit and delete.
     "/medicine",
     "/report",
     "/user/*",
@@ -65,6 +75,9 @@ import java.util.logging.Logger;
 })
 public class RoleFilter implements Filter {
 
+    /** Shown to a cashier who tries to open an admin-only page. */
+    static final String FORBIDDEN_MESSAGE =
+            "Access denied: only an Admin can manage medicines.";
     private static final Logger LOGGER = Logger.getLogger(RoleFilter.class.getName());
 
     /** The one report a non-admin is allowed to open. */
