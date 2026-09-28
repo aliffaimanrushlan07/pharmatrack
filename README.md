@@ -28,13 +28,13 @@ Full mapping including report sections: [`docs/MODULE-OWNERSHIP.md`](docs/MODULE
 | # | Rubric requirement                | Status         | Owner    |
 |---|-----------------------------------|----------------|----------|
 | 1 | Relational tables (≥2)            | ✅ Done — 4 tables incl. junction table | Ramzi |
-| 2 | Forms / pages (≥5)                | 🟡 5 of 8 built | Amir |
+| 2 | Forms / pages (≥5)                | ✅ Done — 13 pages | Amir |
 | 3 | CRUD operations                   | ✅ Done — full Medicine CRUD | Amir |
-| 4 | Search functionality              | 🔴 Not started | Yasierul |
+| 4 | Search functionality              | ✅ Done — medicines by keyword, sales by date range | Yasierul |
 | 5 | Login with encrypted passwords    | ✅ Done — BCrypt | Aliff |
-| 6 | Business logic / calculation      | 🟡 Low-stock badge live; sale maths pending | Yasierul |
-| 7 | Enterprise design (MVC + DAO)     | ✅ Structure in place | Aliff |
-| 8 | Bug-free and efficient            | ⏳ Ongoing | Everyone |
+| 6 | Business logic / calculation      | ✅ Done — SalesCalculator + 3 reports (valuation, sales, expiry) | Yasierul |
+| 7 | Enterprise design (MVC + DAO)     | ✅ Done — MVC + DAO + service layer | Aliff |
+| 8 | Bug-free and efficient            | ✅ End-to-end tested on Tomcat 9 + MySQL 8 | Everyone |
 
 ✅ done 🟡 partial 🔴 not started
 
@@ -95,7 +95,7 @@ PharmaTrack/
 │   ├── SETUP-NETBEANS.md             install + run + troubleshooting
 │   ├── MODULE-OWNERSHIP.md           who owns which file and which report section
 │   ├── REPORT-CHECKLIST.md           the 12 report sections, owner, status
-│   ├── USER-MANUAL.md                skeleton  (Yasierul)
+│   ├── USER-MANUAL.md                complete, with screenshots  (Yasierul)
 │   ├── tasks/                        one brief per member
 │   └── diagrams/                     starting points for all 5 required diagrams
 │
