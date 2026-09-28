@@ -35,6 +35,8 @@
        class="btn">Inventory valuation</a>
     <a href="${pageContext.request.contextPath}/report?type=sales"
        class="btn btn-secondary">Sales summary</a>
+    <a href="${pageContext.request.contextPath}/report?type=expiry"
+       class="btn btn-secondary">Expiring soon</a>
 </div>
 
 <c:choose>

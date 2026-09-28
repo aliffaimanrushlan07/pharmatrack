@@ -48,7 +48,8 @@ is pushed.
 | `GenericDAO.java` | Ramzi | ✅ Done — the interface |
 | `MedicineDAO.java` | Ramzi + Amir | ✅ Done — **worked example** · includes `getStockValuation()` |
 | `UserDAO.java` | Aliff | ✅ Done |
-| `SaleDAO.java` | **Yasierul** | 🔴 Stub — TODO 1–5 |
+| `SaleDAO.java` | **Yasierul** | ✅ Done — incl. `insertSale()` transaction |
+| `ReportDAO.java` | **Yasierul** | ✅ Done — expiring-soon report query |
 
 ### `security/` — **ALIFF**
 
@@ -56,13 +57,13 @@ is pushed.
 |------|--------|
 | `PasswordUtil.java` | ✅ Done — BCrypt |
 | `AuthFilter.java` | ✅ Done |
-| `RoleFilter.java` | 🔴 Stub — TODO 1–2 |
+| `RoleFilter.java` | ✅ Done — cashiers refused from `/medicine` |
 
 ### `service/` — **YASIERUL**
 
 | File | Status |
 |------|--------|
-| `SalesCalculator.java` | 🟡 Partial — TODO 1–4 |
+| `SalesCalculator.java` | ✅ Done — discount, SST, change, averages, report totals (unit-tested) |
 
 ### `controller/`
 
@@ -71,15 +72,15 @@ is pushed.
 | `LoginServlet.java` | Aliff | ✅ Done |
 | `LogoutServlet.java` | Aliff | ✅ Done |
 | `MedicineServlet.java` | Amir | ✅ Done — **worked example** |
-| `SaleServlet.java` | **Amir** | 🔴 Stub — TODO 1–5 |
-| `SearchServlet.java` | **Yasierul** | 🔴 Stub — TODO 1–4 |
-| `ReportServlet.java` | **Yasierul** | 🟡 Partial — stock report done, TODO 1–3 |
+| `SaleServlet.java` | **Amir** | ✅ Done |
+| `SearchServlet.java` | **Yasierul** | ✅ Done |
+| `ReportServlet.java` | **Yasierul** | ✅ Done — stock, sales, expiry |
 
 ### `util/` — **AMIR**
 
 | File | Status |
 |------|--------|
-| `ValidationUtil.java` | 🟡 Partial — TODO 1–3 |
+| `ValidationUtil.java` | ✅ Done |
 
 ### `webapp/` — views
 
@@ -87,17 +88,18 @@ is pushed.
 |------|-------|--------|
 | `index.jsp` | Aliff | ✅ Done |
 | `login.jsp` | Aliff | ✅ Done — ⚠️ remove demo credentials before submitting |
-| `dashboard.jsp` | Amir | 🟡 Partial |
+| `dashboard.jsp` | Amir | ✅ Done |
 | `includes/header.jspf` | Amir | ✅ Done |
 | `includes/footer.jspf` | Amir | ✅ Done |
 | `css/style.css` | Amir | ✅ Done |
 | `medicine/list.jsp` | Amir | ✅ Done — **worked example** |
 | `medicine/form.jsp` | Amir | ✅ Done — **worked example** |
-| `sale/pos.jsp` | **Amir** | 🔴 Stub |
-| `sale/receipt.jsp` | **Amir** | 🔴 Stub |
-| `search.jsp` | **Yasierul** | 🔴 Stub |
+| `sale/pos.jsp` | **Amir** | ✅ Done |
+| `sale/receipt.jsp` | **Amir** | ✅ Done |
+| `search.jsp` | **Yasierul** | ✅ Done |
 | `report/stock.jsp` | Yasierul | ✅ Done — **worked example for reports** |
-| `report/sales.jsp` | **Yasierul** | 🔴 Stub — copy `stock.jsp` |
+| `report/sales.jsp` | **Yasierul** | ✅ Done |
+| `report/expiry.jsp` | **Yasierul** | ✅ Done |
 | `WEB-INF/web.xml` | Aliff | ✅ Done |
 | `WEB-INF/error/*.jsp` | Aliff | ✅ Done |
 | `META-INF/context.xml` | Aliff | ✅ Done |
@@ -119,10 +121,10 @@ is pushed.
 | Database Integration | 10 | Ramzi | ✅ |
 | Java EE Architecture & Design | 10 | Aliff | ✅ |
 | CRUD Functionality | 10 | Amir | ✅ |
-| Search & Calculation Features | 10 | Yasierul | 🟡 valuation report live, search + sales pending |
+| Search & Calculation Features | 10 | Yasierul | ✅ search + 3 reports live |
 | Security (Login & Password) | 10 | Aliff | ✅ |
-| Efficiency & Bug-Free Operation | 10 | Everyone | ⏳ |
-| Interface Design (JSP/JSF) | 10 | Amir | 🟡 |
+| Efficiency & Bug-Free Operation | 10 | Everyone | ✅ 66 end-to-end checks + 30 unit tests pass |
+| Interface Design (JSP/JSF) | 10 | Amir | ✅ |
 
 ---
 

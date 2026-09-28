@@ -13,13 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * Role-based access control — keeps CASHIER accounts out of ADMIN-only pages.
  *
  * <p>=====================================================================<br>
  * MODULE OWNER: <b>ALIFF</b> — Authentication, Security &amp; Architecture<br>
- * STATUS: <b>STUB — Aliff to implement</b><br>
+ * STATUS: <b>COMPLETE</b><br>
  * =====================================================================</p>
  *
  * <p>{@link AuthFilter} answers "is this person logged in?". This filter
@@ -33,32 +34,28 @@ import java.io.IOException;
  * actually stops them. Demonstrating exactly that (log in as cashier, type
  * the admin URL, get refused) is a strong 30 seconds of your presentation.</p>
  *
- * <p><b>TODO 1 (ALIFF) — implement {@code doFilter}:</b></p>
- * <ol>
- *   <li>Cast to {@code HttpServletRequest} / {@code HttpServletResponse}.</li>
- *   <li>Read the {@link my.edu.uptm.pharmatrack.model.User} from the session
- *       under {@link AuthFilter#SESSION_USER}. {@code AuthFilter} has already
- *       guaranteed it is there for these URLs.</li>
- *   <li>If {@code user.isAdmin()} → {@code chain.doFilter(...)}.</li>
- *   <li>Otherwise → forward to {@code /WEB-INF/views/403.jsp} (create it) or
- *       redirect to the dashboard with an {@code error} message. Do <b>not</b>
- *       send them to the login page — they <i>are</i> logged in, they are just
- *       not permitted, and a login prompt would be confusing.</li>
- * </ol>
+ * <p><b>How it works:</b> the logged-in {@link User} is read from the
+ * session (put there by {@link AuthFilter}, which runs first). Admins pass
+ * through; anyone else is redirected to the dashboard with an error message.
+ * They are <i>not</i> sent to the login page — they are logged in, just not
+ * permitted, and a login prompt would be confusing.</p>
  *
- * <p><b>TODO 2 (ALIFF)</b> — once it works, widen {@code urlPatterns} below to
- * cover every admin-only URL. Coordinate with Amir first: he owns the medicine
- * screens and needs to know they are about to become admin-only.</p>
+ * <p>The redirect goes to {@code /dashboard} (the servlet), not
+ * {@code dashboard.jsp}, so the dashboard tiles are filled in as usual.</p>
  *
  * @author Aliff
  */
 @WebFilter(filterName = "RoleFilter", urlPatterns = {
-    // TODO 2: add the rest once the filter body works.
+    // Admin-only areas. /medicine covers list, add, edit and delete.
     "/medicine",
     "/user/*",
     "/admin/*"
 })
 public class RoleFilter implements Filter {
+
+    /** Shown to a cashier who tries to open an admin-only page. */
+    static final String FORBIDDEN_MESSAGE =
+            "Access denied: only an Admin can manage medicines.";
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -69,26 +66,19 @@ public class RoleFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
 
-        // TODO 1 (ALIFF): replace this pass-through with the real role check.
-        //
-        // Right now every logged-in user gets through, which means the filter
-        // is doing nothing. Leaving it like this on submission day would cost
-        // marks in the Security band.
-        //
-            HttpServletRequest  req = (HttpServletRequest)  request;
-            HttpServletResponse res = (HttpServletResponse) response;
-            
-            HttpSession session = req.getSession(false);
-            User user = (session == null) ? null
-                    : (User) session.getAttribute(AuthFilter.SESSION_USER);
+        HttpServletRequest  req = (HttpServletRequest)  request;
+        HttpServletResponse res = (HttpServletResponse) response;
 
-            if (user != null && user.isAdmin()) {
-                chain.doFilter(request, response);
-            } else {
-                res.sendRedirect(req.getContextPath() + "/dashboard.jsp?error=forbidden");
-            }
+        HttpSession session = req.getSession(false);
+        User user = (session == null) ? null
+                : (User) session.getAttribute(AuthFilter.SESSION_USER);
 
-        //chain.doFilter(request, response);
+        if (user != null && user.isAdmin()) {
+            chain.doFilter(request, response);
+        } else {
+            res.sendRedirect(req.getContextPath() + "/dashboard?error="
+                    + URLEncoder.encode(FORBIDDEN_MESSAGE, "UTF-8"));
+        }
     }
 
     @Override

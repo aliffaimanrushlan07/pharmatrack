@@ -176,7 +176,7 @@ public final class SalesCalculator {
     }
 
     // ------------------------------------------------------------------
-    //  Sales report totals (ReportServlet TODO 2)
+    //  Sales report totals
     // ------------------------------------------------------------------
 
     /**
