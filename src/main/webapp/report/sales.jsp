@@ -24,14 +24,16 @@
     <button type="button" class="btn btn-secondary report-print" onclick="window.print()">Print</button>
 </div>
 
-<style media="print">
-    .navbar, .footer, .report-tabs, .report-print { display: none !important; }
-</style>
-
-<%-- Report tabs. All links hit the same servlet with a different ?type=. --%>
-<div class="search-bar report-tabs" style="margin-bottom:18px;">
-    <a href="${pageContext.request.contextPath}/report?type=stock"
-       class="btn btn-secondary">Inventory valuation</a>
+<%-- Report tabs. Both links hit the same servlet with a different ?type=,
+     mirroring the ?action= pattern in MedicineServlet. --%>
+<div class="search-bar" style="margin-bottom:18px;">
+    <%-- Inventory valuation is ADMIN-only (see RoleFilter), so cashiers do
+         not get the tab. Without this a cashier reading the sales summary
+         would be one click away from a 403. --%>
+    <c:if test="${loggedInUser.admin}">
+        <a href="${pageContext.request.contextPath}/report?type=stock"
+           class="btn btn-secondary">Inventory valuation</a>
+    </c:if>
     <a href="${pageContext.request.contextPath}/report?type=sales"
        class="btn">Sales summary</a>
     

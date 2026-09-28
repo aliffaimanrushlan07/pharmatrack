@@ -44,7 +44,7 @@
         </c:if>
         <a href="${pageContext.request.contextPath}/sale" class="btn ${loggedInUser.admin ? 'btn-secondary' : ''}">New sale</a>
         <a href="${pageContext.request.contextPath}/search" class="btn btn-secondary">Search records</a>
-        <a href="${pageContext.request.contextPath}/report" class="btn btn-secondary">Reports</a>
+        <a href="${pageContext.request.contextPath}/report${loggedInUser.admin ? '' : '?type=sales'}" class="btn btn-secondary">Reports</a>
     </div>
 </div>
 
