@@ -21,7 +21,7 @@
 | `webapp/login.jsp` | ✅ Done | ⚠️ remove the demo credentials before submitting |
 | `webapp/WEB-INF/web.xml` | ✅ Done | Session config, error pages |
 | `pom.xml` | ✅ Done | You own this — nobody adds a dependency without asking you |
-| `security/RoleFilter.java` | 🔴 **STUB** | TODO 1–2 |
+| `security/RoleFilter.java` | ✅ **STUB** | TODO 1–2 |
 
 **Report sections you own:** 3. Problem Statement, 4. Project Objectives,
 6.3 Sequence Diagram.

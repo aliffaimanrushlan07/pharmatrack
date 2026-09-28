@@ -37,10 +37,12 @@
 <div class="card">
     <h2>Quick actions</h2>
     <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <a href="${pageContext.request.contextPath}/medicine?action=new" class="btn">Add medicine</a>
-        <a href="${pageContext.request.contextPath}/sale" class="btn btn-secondary">New sale</a>
+        <c:if test="${loggedInUser.admin}">
+            <a href="${pageContext.request.contextPath}/medicine?action=new" class="btn">Add medicine</a>
+        </c:if>
+        <a href="${pageContext.request.contextPath}/sale" class="btn ${loggedInUser.admin ? 'btn-secondary' : ''}">New sale</a>
         <a href="${pageContext.request.contextPath}/search" class="btn btn-secondary">Search records</a>
-        <a href="${pageContext.request.contextPath}/report" class="btn btn-secondary">Reports</a>
+        <a href="${pageContext.request.contextPath}/report${loggedInUser.admin ? '' : '?type=sales'}" class="btn btn-secondary">Reports</a>
     </div>
 </div>
 

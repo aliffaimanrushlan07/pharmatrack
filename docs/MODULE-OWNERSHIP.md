@@ -56,7 +56,7 @@ is pushed.
 |------|--------|
 | `PasswordUtil.java` | ✅ Done — BCrypt |
 | `AuthFilter.java` | ✅ Done |
-| `RoleFilter.java` | 🔴 Stub — TODO 1–2 |
+| `RoleFilter.java` | ✅ Stub — TODO 1–2 |
 
 ### `service/` — **YASIERUL**
 

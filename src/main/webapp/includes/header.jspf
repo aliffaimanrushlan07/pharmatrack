@@ -30,13 +30,22 @@
 
         <a href="${pageContext.request.contextPath}/dashboard"
            class="${activeNav eq 'dashboard' ? 'active' : ''}">Dashboard</a>
-        <a href="${pageContext.request.contextPath}/medicine"
-           class="${activeNav eq 'medicine' ? 'active' : ''}">Medicines</a>
+        <%-- Medicine module is ADMIN-only. Hiding the link is courtesy, not
+             security - RoleFilter is what actually refuses a cashier who
+             types the URL. Both are needed: the filter alone would leave a
+             dead link on screen, the c:if alone would be trivial to bypass. --%>
+        <c:if test="${loggedInUser.admin}">
+            <a href="${pageContext.request.contextPath}/medicine"
+               class="${activeNav eq 'medicine' ? 'active' : ''}">Medicines</a>
+        </c:if>
         <a href="${pageContext.request.contextPath}/sale"
            class="${activeNav eq 'sale' ? 'active' : ''}">New Sale</a>
         <a href="${pageContext.request.contextPath}/search"
            class="${activeNav eq 'search' ? 'active' : ''}">Search</a>
-        <a href="${pageContext.request.contextPath}/report"
+        <%-- /report with no type defaults to the inventory valuation report,
+             which is ADMIN-only. Cashiers are sent straight to the sales
+             summary instead, so the link never lands them on a 403. --%>
+        <a href="${pageContext.request.contextPath}/report${loggedInUser.admin ? '' : '?type=sales'}"
            class="${activeNav eq 'report' ? 'active' : ''}">Reports</a>
 
         <span class="spacer"></span>

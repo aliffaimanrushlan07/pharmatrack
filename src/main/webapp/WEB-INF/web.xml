@@ -45,6 +45,10 @@
          library versions - a real finding in a security review, and an easy
          mark to lose in the Security band. -->
     <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/error/403.jsp</location>
+    </error-page>
+    <error-page>
         <error-code>404</error-code>
         <location>/WEB-INF/error/404.jsp</location>
     </error-page>
