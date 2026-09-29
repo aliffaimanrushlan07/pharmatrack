@@ -45,6 +45,14 @@
     </c:if>
 </form>
 
+<div class="stock-legend" aria-label="Stock status guide">
+    <strong>Stock guide:</strong>
+    <span><span class="badge badge-out">Out of Stock</span> 0 units</span>
+    <span><span class="badge badge-low">Low</span> 1&ndash;20 units</span>
+    <span><span class="badge badge-ok">Optimal</span> 21&ndash;80 units</span>
+    <span><span class="badge badge-excess">Excess (High)</span> 81+ units</span>
+</div>
+
 <c:choose>
     <%-- EMPTY STATE: never show a bare empty table. Telling the user why
          there is nothing here is a cheap win in the interface criterion. --%>
@@ -91,17 +99,11 @@
                         </td>
                         <td class="num">${m.quantityInStock}</td>
                         <td>
-                            <%-- isLowStock() is a method on the Medicine model.
-                                 EL calls it as ${m.lowStock} - the business rule
-                                 lives in Java, not in this page. --%>
-                            <c:choose>
-                                <c:when test="${m.lowStock}">
-                                    <span class="badge badge-low">Low</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge badge-ok">OK</span>
-                                </c:otherwise>
-                            </c:choose>
+                            <%-- The business rule and matching CSS class are
+                                 supplied by the Medicine model. --%>
+                            <span class="badge ${m.stockStatusCssClass}">
+                                <c:out value="${m.stockStatus}"/>
+                            </span>
                         </td>
                         <td>
                             <c:if test="${not empty m.expiryDate}">
