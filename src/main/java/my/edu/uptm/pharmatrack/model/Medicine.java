@@ -9,9 +9,8 @@ import java.sql.Date;
  *
  * <p>MODULE OWNER: <b>RAMZI</b> — Database Design &amp; Data Access Layer.</p>
  *
- * <p>{@code reorderLevel} is kept purely to drive the Low/OK badge on the
- * medicine list via {@link #isLowStock()}. The automatic low-stock report and
- * reorder-quantity suggestion were removed from the system scope.</p>
+ * <p>Every medicine uses the same stock-status ranges: zero is out of stock,
+ * 1-20 is low, 21-80 is optimal, and 81 or more is excess stock.</p>
  *
  * <p>{@code price} is a {@link BigDecimal}, not a {@code double}. Money must
  * never be stored in a floating-point type — {@code 0.1 + 0.2} is not
@@ -23,6 +22,8 @@ import java.sql.Date;
 public class Medicine implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final int LOW_STOCK_MAX = 20;
+    private static final int OPTIMAL_STOCK_MAX = 80;
 
     private int        medicineId;
     private String     name;
@@ -36,13 +37,52 @@ public class Medicine implements Serializable {
         this.price = BigDecimal.ZERO;
     }
 
-    /**
-     * Business rule behind the Low/OK badge on the medicine list.
-     *
-     * @return true when stock has fallen to or below the reorder threshold.
-     */
+    /** @return true when there are no units available. */
+    public boolean isOutOfStock() {
+        return quantityInStock <= 0;
+    }
+
+    /** @return true when stock is between 1 and 20 units. */
     public boolean isLowStock() {
-        return quantityInStock <= reorderLevel;
+        return !isOutOfStock() && quantityInStock <= LOW_STOCK_MAX;
+    }
+
+    /** @return true when stock is 81 units or more. */
+    public boolean isExcessStock() {
+        return quantityInStock > OPTIMAL_STOCK_MAX;
+    }
+
+    /**
+     * Human-readable stock status used by JSP Expression Language as
+     * {@code ${m.stockStatus}}.
+     *
+     * @return Out of Stock, Low, Optimal, or Excess (High).
+     */
+    public String getStockStatus() {
+        if (isOutOfStock()) {
+            return "Out of Stock";
+        }
+        if (isLowStock()) {
+            return "Low";
+        }
+        if (isExcessStock()) {
+            return "Excess (High)";
+        }
+        return "Optimal";
+    }
+
+    /** @return the CSS badge class matching the current stock status. */
+    public String getStockStatusCssClass() {
+        if (isOutOfStock()) {
+            return "badge-out";
+        }
+        if (isLowStock()) {
+            return "badge-low";
+        }
+        if (isExcessStock()) {
+            return "badge-excess";
+        }
+        return "badge-ok";
     }
 
     public int getMedicineId()                      { return medicineId; }

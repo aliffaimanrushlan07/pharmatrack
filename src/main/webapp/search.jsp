@@ -138,14 +138,9 @@
                         </td>
                         <td class="num">${m.quantityInStock}</td>
                         <td>
-                            <c:choose>
-                                <c:when test="${m.lowStock}">
-                                    <span class="badge badge-low">Low</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge badge-ok">OK</span>
-                                </c:otherwise>
-                            </c:choose>
+                            <span class="badge ${m.stockStatusCssClass}">
+                                <c:out value="${m.stockStatus}"/>
+                            </span>
                         </td>
                         <td>
                             <c:if test="${not empty m.expiryDate}">

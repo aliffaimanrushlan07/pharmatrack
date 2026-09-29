@@ -187,8 +187,19 @@ input:focus, select:focus, textarea:focus {
 }
 .badge-ok   { background: var(--success-light); color: #14532d; }
 .badge-low  { background: var(--danger-light);  color: #7f1d1d; }
+.badge-out  { background: #991b1b; color: #ffffff; }
+.badge-excess { background: #e0e7ff; color: #3730a3; }
 .badge-warn { background: var(--warning-light); color: #78350f; }
 .badge-role { background: var(--primary-light); color: var(--primary-dark); }
+
+.stock-legend {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px 16px;
+    margin: -4px 0 18px; padding: 10px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--surface); color: var(--text-muted); font-size: 12px;
+}
+.stock-legend strong { color: var(--text); }
+.stock-legend > span { display: inline-flex; align-items: center; gap: 6px; }
 
 /* ---------- Login page --------------------------------------------------- */
 .login-wrap {
