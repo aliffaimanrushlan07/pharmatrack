@@ -46,8 +46,8 @@ CREATE TABLE users (
 
 -- ---------------------------------------------------------------------------
 --  TABLE 2: medicines
---  The inventory itself. quantity_in_stock drives the low-stock alert;
---  reorder_level is the threshold each medicine is compared against.
+--  quantity_in_stock drives the four fixed stock-status ranges in Medicine.java.
+--  reorder_level remains only for compatibility with older databases.
 -- ---------------------------------------------------------------------------
 CREATE TABLE medicines (
     medicine_id       INT           NOT NULL AUTO_INCREMENT,
@@ -55,7 +55,7 @@ CREATE TABLE medicines (
     category          VARCHAR(50)            DEFAULT NULL,
     price             DECIMAL(10,2) NOT NULL DEFAULT 0.00,
     quantity_in_stock INT           NOT NULL DEFAULT 0,
-    reorder_level     INT           NOT NULL DEFAULT 10,   -- drives the Low/OK badge
+    reorder_level     INT           NOT NULL DEFAULT 10,   -- legacy; not used by the application
     expiry_date       DATE                   DEFAULT NULL,
 
     CONSTRAINT pk_medicines PRIMARY KEY (medicine_id),

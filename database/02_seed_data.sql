@@ -38,8 +38,8 @@ INSERT INTO users (username, password_hash, full_name, role) VALUES
 
 -- ---------------------------------------------------------------------------
 --  MEDICINES
---  A few rows are deliberately BELOW their reorder_level so the low-stock
---  report has something to show during the demo (see the last 3 rows).
+--  A few rows are deliberately within the fixed 1-20 low-stock range so the
+--  medicine page has something to show during the demo (see the last 3 rows).
 --  One row expires soon, so the expiry logic is also demonstrable.
 -- ---------------------------------------------------------------------------
 INSERT INTO medicines (name, category, price, quantity_in_stock, reorder_level, expiry_date) VALUES

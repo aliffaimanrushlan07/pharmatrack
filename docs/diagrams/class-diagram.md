@@ -17,12 +17,11 @@ criterion.
 │ - passwordHash : String     │   │ - category : String         │
 │ - fullName : String         │   │ - price : BigDecimal        │
 │ - role : String             │   │ - quantityInStock : int     │
-│ - active : boolean          │   │ - reorderLevel : int        │
-├─────────────────────────────┤   │ - expiryDate : Date         │
-│ + isAdmin() : boolean       │   ├─────────────────────────────┤
-│ + getters/setters           │   │ + isLowStock() : boolean    │
-└─────────────────────────────┘   │ + getters/setters           │
-                                  └─────────────────────────────┘
+│ - active : boolean          │   │ - expiryDate : Date         │
+├─────────────────────────────┤   ├─────────────────────────────┤
+│ + isAdmin() : boolean       │   │ + getStockStatus() : String │
+│ + getters/setters           │   │ + getters/setters           │
+└─────────────────────────────┘   └─────────────────────────────┘
 
 ┌─────────────────────────────┐   ┌─────────────────────────────┐
 │ SaleItem                    │   │ Sale                        │
@@ -42,9 +41,8 @@ criterion.
 ```
 
 > **Four model classes.** `Supplier` was removed from scope.
-> `Medicine.isLowStock()` compares `quantityInStock` against `reorderLevel` —
-> it drives the Low/OK badge on the medicine list and is the one calculation
-> that is already working.
+> `Medicine.getStockStatus()` converts `quantityInStock` into four fixed
+> statuses: Out of Stock, Low, Optimal, or Excess (High).
 
 ## Layer 2 — dao ⭐ the important part
 

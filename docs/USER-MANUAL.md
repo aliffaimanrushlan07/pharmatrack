@@ -141,7 +141,7 @@ Click **Medicines** in the navigation bar.
 | **Name / Category** | What the medicine is and its group (e.g. Analgesic) |
 | **Price (RM)** | Selling price for one unit |
 | **Stock** | How many units are on the shelf now |
-| **Status** | **OK** (green) or **Low** (red) — *Low* means stock has reached or fallen below the reorder level, so it is time to order more |
+| **Status** | **Out of Stock** (0), **Low** (1-20), **Optimal** (21-80), or **Excess (High)** (81+) |
 | **Expiry** | The expiry date printed on the stock |
 
 Use the search box at the top of the list to filter by name or category.
@@ -162,7 +162,6 @@ Use the search box at the top of the list to filter by name or category.
 | **Category** | The group, e.g. *Analgesic*, *Antibiotic* |
 | **Unit price (RM) \*** | Selling price, e.g. `12.50` |
 | **Quantity in stock \*** | Units being put on the shelf |
-| **Reorder level \*** | When stock falls to this number or below, the medicine is flagged **Low** |
 | **Expiry date** | The date on the packaging |
 
 ![Add medicine form filled in](screenshots/07-medicine-add-filled.png)

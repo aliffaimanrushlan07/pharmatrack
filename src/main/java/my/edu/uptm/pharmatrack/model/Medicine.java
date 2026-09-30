@@ -30,7 +30,6 @@ public class Medicine implements Serializable {
     private String     category;
     private BigDecimal price;
     private int        quantityInStock;
-    private int        reorderLevel;
     private Date       expiryDate;
 
     public Medicine() {
@@ -99,9 +98,6 @@ public class Medicine implements Serializable {
 
     public int getQuantityInStock()                 { return quantityInStock; }
     public void setQuantityInStock(int q)           { this.quantityInStock = q; }
-
-    public int getReorderLevel()                    { return reorderLevel; }
-    public void setReorderLevel(int reorderLevel)   { this.reorderLevel = reorderLevel; }
 
     public Date getExpiryDate()                     { return expiryDate; }
     public void setExpiryDate(Date expiryDate)      { this.expiryDate = expiryDate; }

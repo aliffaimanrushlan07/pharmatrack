@@ -48,7 +48,7 @@ Verify:
 ```sql
 USE pharmatrack;
 SELECT COUNT(*) FROM medicines;   -- expect 13
-SELECT COUNT(*) FROM medicines WHERE quantity_in_stock <= reorder_level;  -- expect 3
+SELECT COUNT(*) FROM medicines WHERE quantity_in_stock BETWEEN 1 AND 20;  -- expect 3
 ```
 
 ---

@@ -64,8 +64,8 @@ medicines ──1:M──> sale_items <──M:1── sales ──M:1──> us
 `sale_items` is a junction table resolving the many-to-many between sales and
 medicines — that is what lets one receipt hold several different medicines.
 
-Three medicines are seeded **below their `reorder_level`** so the Low/OK badge
-on the medicine list has something to show during the demo.
+Three medicines are seeded in the fixed **1-20 Low** range so the stock-status
+badges on the medicine list have something to show during the demo.
 
 ---
 

@@ -166,7 +166,6 @@ public class MedicineServlet extends HttpServlet {
         medicine.setCategory(ValidationUtil.trimToEmpty(request.getParameter("category")));
         medicine.setPrice(parsePrice(request.getParameter("price")));
         medicine.setQuantityInStock(ValidationUtil.parseInt(request.getParameter("quantityInStock"), 0));
-        medicine.setReorderLevel(ValidationUtil.parseInt(request.getParameter("reorderLevel"), 10));
         medicine.setExpiryDate(parseDate(request.getParameter("expiryDate")));
 
         // --- Server-side validation ------------------------------------------
@@ -238,9 +237,6 @@ public class MedicineServlet extends HttpServlet {
         }
         if (m.getQuantityInStock() < 0) {
             return "Quantity in stock cannot be negative.";
-        }
-        if (m.getReorderLevel() < 0) {
-            return "Reorder level cannot be negative.";
         }
         return null;
     }

@@ -33,7 +33,7 @@ machine.
       and recreates, so this is safe to repeat.
 - [ ] Run `02_seed_data.sql`. Check the confirmation output: 2 users,
       13 medicines, 2 sales, 6 sale items.
-- [ ] Run `SELECT * FROM medicines WHERE quantity_in_stock <= reorder_level;` — expect 3 rows.
+- [ ] Run `SELECT * FROM medicines WHERE quantity_in_stock BETWEEN 1 AND 20;` — expect 3 rows.
 - [ ] Open `03_sample_queries.sql` and run every query in it. All of them
       should return results without error.
 - [ ] Tell the group in the chat that the database is verified. **This unblocks

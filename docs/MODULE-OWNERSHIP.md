@@ -15,7 +15,9 @@ is pushed.
 
 > **Scope change (agreed by the group):** supplier management and the automatic
 > low-stock report were removed. Amir took the point-of-sale screen in place of
-> that module; Yasierul keeps `SaleDAO`, `SalesCalculator`, search and reports. `medicines.reorder_level` survives only to drive the Low/OK badge.
+> that module; Yasierul keeps `SaleDAO`, `SalesCalculator`, search and reports.
+> Medicine status uses fixed quantity ranges; the legacy `reorder_level` column
+> remains only for compatibility with existing databases.
 
 ---
 

@@ -166,8 +166,8 @@ about to write, one report earlier:
 > `grandTotal()` and do the equivalent.
 
 > The low-stock report and reorder calculation were **removed from scope**.
-> The Low/OK badge on the medicine list stays — it is computed in
-> `Medicine.isLowStock()` and needs nothing from you.
+> The four-level stock badge on the medicine list is computed from fixed
+> quantity ranges in `Medicine.getStockStatus()` and needs nothing from you.
 
 **Two things to say in the viva about the valuation report**, since it is on
 your page and you will be asked:

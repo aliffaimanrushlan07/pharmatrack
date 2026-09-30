@@ -110,7 +110,7 @@ system** by group decision. If you see them mentioned in an old draft of the
 report, that draft is out of date. What remains:
 
 - 4 tables: `users`, `medicines`, `sales`, `sale_items`
-- The Low/OK badge on the medicine list stays (it needs no separate screen)
+- Four fixed stock-status badges appear on the medicine list
 - Amir owns the point-of-sale screen in place of supplier CRUD
 
 ---
