@@ -3,12 +3,12 @@
     OWNER: ALIFF (Authentication, Security & Architecture)
     STATUS: COMPLETE
 
-    Does not include header.jspf - the navigation bar would be meaningless to
+    Does not include header.jspf as the navigation bar would be meaningless to
     someone who is not logged in yet.
 
     Security note for the report: the form posts to /login and the password
     field is type="password". There is NO "remember me" and no client-side
-    password handling at all - the plain password exists only for the duration
+    password handling at all because the plain password exists only for the duration
     of the POST request and is never written anywhere.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
@@ -60,11 +60,11 @@
              It is here so the group can log in during development. Leaving
              credentials printed on a login page in the submitted version
              would be marked down under the Security criterion. --%>
-        <div class="demo-box">
+        <%--<div class="demo-box">
             <strong>Test accounts (remove before submission)</strong><br>
             Admin: <code>admin</code> / <code>admin123</code><br>
             Cashier: <code>cashier</code> / <code>cashier123</code>
-        </div>
+        </div> --%>
 
     </div>
 </div>
