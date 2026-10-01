@@ -38,7 +38,7 @@ Full mapping including report sections: [`docs/MODULE-OWNERSHIP.md`](docs/MODULE
 
 ✅ done 🟡 partial 🔴 not started
 
-**What already works end to end:** login → dashboard → medicine list → add / edit / delete a medicine → search medicines → logout. The Low/OK badge on the medicine list is live.
+**What already works end to end:** login → dashboard → medicine list → add / edit / delete a medicine → search medicines → logout. The four-level stock-status badge on the medicine list is live.
 
 **What is still stubbed:** point of sale, the search page, the sales summary report, and role-based access control. Each stub file has numbered `TODO`s naming its owner.
 
@@ -165,8 +165,9 @@ Four files are finished specifically so the rest can be copied from them. When y
 ### Scope note
 
 Supplier management and the automatic low-stock report were **removed from
-scope** by group decision. `medicines.reorder_level` is kept solely to drive
-the Low/OK badge on the medicine list.
+scope** by group decision. Medicine status now uses fixed ranges based only on
+`quantity_in_stock`; the legacy `reorder_level` column is retained for database
+compatibility but is not used by the application.
 
 ---
 

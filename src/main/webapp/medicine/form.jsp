@@ -64,13 +64,6 @@
             </div>
 
             <div class="form-row">
-                <label for="reorderLevel">Reorder level <span class="req">*</span></label>
-                <input type="number" id="reorderLevel" name="reorderLevel" min="0" required
-                       value="${empty medicine ? 10 : medicine.reorderLevel}">
-                <div class="hint">Flagged as low stock at or below this figure.</div>
-            </div>
-
-            <div class="form-row">
                 <label for="expiryDate">Expiry date</label>
                 <input type="date" id="expiryDate" name="expiryDate"
                        value="${medicine.expiryDate}">

@@ -39,8 +39,8 @@ ORDER BY m.medicine_id DESC;
 SELECT * FROM medicines WHERE medicine_id = 1;
 
 -- B3. CREATE.
-INSERT INTO medicines (name, category, price, quantity_in_stock, reorder_level, expiry_date)
-VALUES ('Test Medicine', 'Test', 9.99, 10, 5, '2028-01-01');
+INSERT INTO medicines (name, category, price, quantity_in_stock, expiry_date)
+VALUES ('Test Medicine', 'Test', 9.99, 10, '2028-01-01');
 
 -- B4. UPDATE.
 UPDATE medicines

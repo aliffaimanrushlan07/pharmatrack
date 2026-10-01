@@ -59,13 +59,12 @@ public class MedicineDAO implements GenericDAO<Medicine> {
 
     private static final String SQL_INSERT =
         "INSERT INTO medicines "
-      + "(name, category, price, quantity_in_stock, reorder_level, expiry_date) "
-      + "VALUES (?, ?, ?, ?, ?, ?)";
+      + "(name, category, price, quantity_in_stock, expiry_date) "
+      + "VALUES (?, ?, ?, ?, ?)";
 
     private static final String SQL_UPDATE =
         "UPDATE medicines SET "
-      + "name = ?, category = ?, price = ?, quantity_in_stock = ?, "
-      + "reorder_level = ?, expiry_date = ? "
+      + "name = ?, category = ?, price = ?, quantity_in_stock = ?, expiry_date = ? "
       + "WHERE medicine_id = ?";
 
     private static final String SQL_DELETE =
@@ -213,7 +212,7 @@ public class MedicineDAO implements GenericDAO<Medicine> {
              PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
 
             bindMedicineFields(ps, m);
-            ps.setInt(7, m.getMedicineId());   // the WHERE clause parameter
+            ps.setInt(6, m.getMedicineId());   // the WHERE clause parameter
 
             return ps.executeUpdate() == 1;
         }
@@ -338,13 +337,12 @@ public class MedicineDAO implements GenericDAO<Medicine> {
         m.setCategory(rs.getString("category"));
         m.setPrice(rs.getBigDecimal("price"));
         m.setQuantityInStock(rs.getInt("quantity_in_stock"));
-        m.setReorderLevel(rs.getInt("reorder_level"));
         m.setExpiryDate(rs.getDate("expiry_date"));
         return m;
     }
 
     /**
-     * Binds parameters 1–6, which are identical in the INSERT and UPDATE
+     * Binds parameters 1-5, which are identical in the INSERT and UPDATE
      * statements. Keeping them together means a new column only has to be
      * added in one place.
      */
@@ -353,13 +351,12 @@ public class MedicineDAO implements GenericDAO<Medicine> {
         ps.setString(2, m.getCategory());
         ps.setBigDecimal(3, m.getPrice());
         ps.setInt(4, m.getQuantityInStock());
-        ps.setInt(5, m.getReorderLevel());
 
         // setDate(null) is not allowed — a null DATE must be set explicitly.
         if (m.getExpiryDate() != null) {
-            ps.setDate(6, m.getExpiryDate());
+            ps.setDate(5, m.getExpiryDate());
         } else {
-            ps.setNull(6, Types.DATE);
+            ps.setNull(5, Types.DATE);
         }
 
     }

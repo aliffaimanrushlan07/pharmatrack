@@ -11,8 +11,9 @@ that route takes about 30 seconds and guarantees it matches the code.
 **Exactly as implemented in `database/01_schema.sql`.** Use these names — the
 draft report has older ones.
 
-> **Four tables.** Suppliers were removed from scope. `reorder_level` stays on
-> `medicines` purely to drive the Low/OK badge — there is no low-stock report.
+> **Four tables.** Suppliers were removed from scope. `reorder_level` remains
+> as a legacy compatibility column but is not used by the application; stock
+> status is calculated from fixed `quantity_in_stock` ranges.
 
 ### users
 | Attribute | Type | Key |
@@ -33,7 +34,7 @@ draft report has older ones.
 | category | VARCHAR(50) | |
 | price | DECIMAL(10,2) | |
 | quantity_in_stock | INT | |
-| reorder_level | INT | |
+| reorder_level | INT | legacy compatibility |
 | expiry_date | DATE | nullable |
 
 ### sales
